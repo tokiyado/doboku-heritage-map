@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#142b37">
+  <meta name="description" content="土木学会選奨土木遺産を地図から探索できる非公式アトラス。遺産名・地名の検索、地域・年度・種類での絞り込みに対応。">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="土木遺産アトラス">
+  <meta property="og:title" content="土木遺産アトラス | Heritage Atlas">
+  <meta property="og:description" content="土木学会選奨土木遺産を地図から探索できる非公式アトラス。">
+  <meta name="twitter:card" content="summary">
+  <title>土木遺産アトラス | Heritage Atlas</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="leaflet.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="leaflet.js"></script>
+  <script defer src="photos.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="./">
+    <span class="brand-mark">H<span>＋</span></span>
+    <span>土木遺産アトラス<small>HERITAGE ATLAS / JAPAN</small></span>
+  </a>
+  <div class="top-right">
+    <span class="edition" data-stat="years-en"></span>
+    <button id="about" class="quiet">この地図について ↗</button>
+  </div>
+</header>
+
+<main class="workspace">
+  <aside class="explorer" aria-label="土木遺産を探す">
+    <div class="explorer-head">
+      <div class="eyebrow">EXPLORE THE HERITAGE</div>
+      <h1>土木の歴史を、地図から。</h1>
+      <label class="search-box">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+        <input id="search" type="search" placeholder="遺産名・地名で探す" aria-label="遺産名・地名で検索">
+      </label>
+      <div class="selectors">
+        <select id="region" aria-label="地域">
+          <option value="">全国すべて</option>
+          <option>北海道</option>
+          <option>東北</option>
+          <option>関東・甲信越</option>
+          <option>中部</option>
+          <option>関西</option>
+          <option>中国</option>
+          <option>四国</option>
+          <option>九州・沖縄</option>
+          <option>海外</option>
+        </select>
+        <select id="prefecture" aria-label="都道府県・地域">
+          <option value="">都道府県・地域すべて</option>
+        </select>
+        <select id="year" aria-label="選奨年度">
+          <option value="">選奨年度すべて</option>
+        </select>
+      </div>
+      <div id="categories" class="categories" aria-label="構造物の種類"></div>
+    </div>
+    <div class="results-bar">
+      <div><strong id="result-count">—</strong><span> 件の土木遺産</span></div>
+      <button id="reset" class="reset" hidden>条件を解除</button>
+    </div>
+    <div id="scope" class="scope" hidden></div>
+    <div id="results" class="results" aria-live="polite">
+      <p class="empty">土木遺産を読み込んでいます…</p>
+    </div>
+    <footer class="sidebar-footer">
+      出典 <a href="https://www.jsce.or.jp/contents/isan/" target="_blank" rel="noopener">土木学会 選奨土木遺産 ↗</a>
+      <span>非公式アトラス</span>
+    </footer>
+  </aside>
+
+  <section class="map-surface" aria-label="土木遺産の分布地図">
+    <div id="map"></div>
+    <div class="map-heading">
+      <span class="eyebrow">THE CIVIL ENGINEERING ARCHIVE</span>
+      <div>
+        <h2 id="map-title">日本を、つくってきた風景。</h2>
+        <span class="map-badge" id="point-total"></span>
+      </div>
+      <p id="map-subtitle">数字で地域を拡大。ピンから遺産の詳細へ。</p>
+    </div>
+    <div class="map-controls">
+      <button id="zoom-in" aria-label="拡大">＋</button>
+      <button id="zoom-out" aria-label="縮小">−</button>
+      <span></span>
+      <button id="fit" aria-label="全国を表示" title="全国を表示">⌖</button>
+    </div>
+    <div class="map-stat">
+      <span class="eyebrow">ARCHIVE IN NUMBERS</span>
+      <div><strong data-stat="records">—</strong><span>土木遺産</span></div>
+      <p id="stat-years"></p>
+      <div class="stat-line"></div>
+      <small id="stat-points"></small>
+    </div>
+    <div class="map-note">ⓘ 土木学会の公開マップに基づく位置。数字は地点数です。</div>
+    <div id="map-error" class="map-error" hidden>背景地図を読み込めません。遺産一覧と検索は引き続き使えます。</div>
+  </section>
+</main>
+
+<dialog id="detail" class="detail">
+  <button class="dialog-close" id="close-detail" aria-label="詳細を閉じる">×</button>
+  <div id="detail-content"></div>
+</dialog>
+
+<dialog id="about-dialog" class="about-dialog">
+  <button class="dialog-close" id="close-about" aria-label="説明を閉じる">×</button>
+  <span class="eyebrow">ABOUT THIS ATLAS</span>
+  <h2>地図と掲載情報について</h2>
+  <p>土木学会の年度別一覧に掲載された、<span data-stat="years"></span>年度の選奨土木遺産<span data-stat="records"></span>件を探せる非公式サイトです。土木学会が運営・監修するものではありません。</p>
+  <p><strong><span data-stat="records"></span>件の遺産を、<span data-stat="points"></span>地点で表示しています。</strong>複数の施設からなる遺産は地点を分けています。位置は土木学会の公開マップ（2026年9月27日更新）から、公式解説のリンクと選奨年度で照合しました。数字は近接する地点数です。</p>
+  <p>座標は出典地図の掲載位置であり、現地測量や独立した実地確認は行っていません。見学入口や立入可能な場所を示すものではありません。</p>
+  <p>分類は構造物の種類による独自整理です。所在地・竣工年は原資料の表記に準拠しており、旧地名も含みます。見学可否や現在の状態は、訪問前に管理者の案内で確認してください。</p>
+  <p>土木学会の写真は掲載していません。各遺産の詳細から公式ページを開いてご覧ください。一部の遺産には、Wikimedia Commons の写真を出典・ライセンスを明記して掲載しています。</p>
+  <p class="source-date">データ取得日：2026年10月9日（2000〜2025年度分は2026年9月10日）</p>
+  <a class="primary-link" href="https://www.jsce.or.jp/contents/isan/list/index.html" target="_blank" rel="noopener">土木学会の年度別一覧を見る ↗</a>
+</dialog>
+
+<dialog id="photo-dialog" class="photo-dialog">
+  <button class="dialog-close" id="close-photo" aria-label="拡大写真を閉じる">×</button>
+  <div id="photo-content"></div>
+</dialog>
+
+<dialog id="viewer3d" class="viewer3d" aria-label="土木遺産の3D試験ビュー">
+  <button class="dialog-close viewer-close" id="close-3d" aria-label="3D地図を閉じる">×</button>
+  <div class="viewer-stage">
+    <div id="viewer-map" aria-label="旋回・俯瞰できる3D地図"></div>
+    <div id="viewer-loading" class="viewer-loading"><span></span>3D地図を読み込んでいます</div>
+    <div id="viewer-error" class="viewer-error" hidden></div>
+    <div class="viewer-tools" aria-label="3D地図の操作">
+      <button id="orbit" aria-pressed="false">自動旋回</button>
+      <button id="rotate-left" aria-label="左へ旋回">↶</button>
+      <button id="rotate-right" aria-label="右へ旋回">↷</button>
+      <button id="pitch-up" aria-label="真上から俯瞰する">俯瞰</button>
+      <button id="pitch-down" aria-label="斜めから見る">斜め</button>
+      <button id="reset-3d">初期視点</button>
+    </div>
+  </div>
+  <aside id="viewer-info" class="viewer-info"></aside>
+</dialog>
+
+<noscript>この地図の操作にはJavaScriptが必要です。<a href="https://www.jsce.or.jp/contents/isan/list/index.html">土木学会の一覧を見る</a></noscript>
+</body>
+</html>

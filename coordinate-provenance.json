@@ -1,0 +1,24 @@
+{
+  "source": "https://dobocolle.jsce.or.jp/digital-map/",
+  "map": "https://www.google.com/maps/d/embed?mid=1J8uktUmdsmBiT32O0V5ePoGcqE6fTu0",
+  "retrievals": [
+    {
+      "years": "2000-2025",
+      "sourceUpdated": "2025-11-27",
+      "retrieved": "2026-09-10",
+      "records": 550,
+      "points": 651
+    },
+    {
+      "years": "2026",
+      "sourceUpdated": "2026-09-27",
+      "retrieved": "2026-10-09",
+      "records": 20,
+      "points": 23
+    }
+  ],
+  "matching": "Official overview URL and award year; multi-site records preserved",
+  "records": 570,
+  "points": 674,
+  "accuracy": "Source map locations; not surveyed or independently field verified"
+}
