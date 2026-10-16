@@ -57,6 +57,12 @@ let category = 'すべて';
 let selectedIds = [];
 let limit = PAGE_SIZE;
 let detailId = null; // 詳細を開いている遺産
+let listMode = 'all'; // 'all' = 条件に合う全件／'view' = この地図の範囲
+let origin = null; // 現在地（ボタンを押して取れたときだけ）。{lat, lng, at: 取得した時刻, stale: 取り直しに失敗したか}
+let locateLayer = null;
+let distances = new Map(); // 遺産ID → 基点から最も近い地点までの直線距離（km）
+let selectedRowId = null; // 最後に詳細を開いた遺産（一覧の行に印を付ける）
+let listReturn = null; // 一覧から詳細を開いたときの一覧の位置 {id, scroll}
 
 let map = null;
 let markers = null;
@@ -120,6 +126,26 @@ function hasFilter() {
     || Boolean($('region').value || $('prefecture').value || $('year').value || $('search').value);
 }
 
+/* ---------- 距離（直線） ---------- */
+
+function distanceKm(a, b) {
+  const rad = x => x * Math.PI / 180;
+  const dLat = rad(b.lat - a.lat);
+  const dLng = rad(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.sqrt(h));
+}
+
+// 複数の地点がある遺産は、いちばん近い地点までの距離を使う
+const nearestKm = (r, from) => Math.min(...r.points.map(p => distanceKm(from, p)));
+
+// 道路の距離と取り違えないよう、必ず「直線」と書く
+function formatDistance(km) {
+  if (km < 1) return `直線 約${Math.max(10, Math.round(km * 100) * 10)}m`;
+  if (km < 10) return `直線 約${km.toFixed(1)}km`;
+  return `直線 約${Math.round(km).toLocaleString()}km`;
+}
+
 /* ---------- 一覧 ---------- */
 
 function thumbHTML(r) {
@@ -129,7 +155,8 @@ function thumbHTML(r) {
 }
 
 function recordHTML(r) {
-  return `<button class="record" data-id="${esc(r.id)}" aria-label="${esc(r.name)}の詳細">
+  const selected = r.id === selectedRowId ? ' is-selected' : '';
+  return `<button class="record${selected}" data-id="${esc(r.id)}" aria-label="${esc(r.name)}の詳細"${selected ? ' aria-current="true"' : ''}>
     <span class="record-image">${thumbHTML(r)}</span>
     <span class="record-text">
       <span class="record-top">
@@ -138,6 +165,7 @@ function recordHTML(r) {
       </span>
       <h3>${esc(r.name)}</h3>
       <span class="record-location">${esc(r.location)}</span>
+      ${distances.has(r.id) && origin ? `<span class="record-distance">${formatDistance(distances.get(r.id))}</span>` : ''}
       ${r.points.length > 1 ? `<span class="point-count">${r.points.length}地点の遺産</span>` : ''}
       ${narrativeIds.has(r.id) ? '<span class="narrative-label">紹介文</span>' : ''}
       ${PILOTS_3D[r.id] ? '<span class="pilot-label">地形ビュー</span>' : ''}
@@ -145,9 +173,45 @@ function recordHTML(r) {
   </button>`;
 }
 
+// 一覧に出す遺産を決める。絞り込みの条件はどちらの一覧にも同じように効く
+function listRows() {
+  let rows = records.filter(r => matches(r));
+  const view = listMode === 'view' && map;
+  if (view) {
+    const bounds = map.getBounds();
+    rows = rows.filter(r => r.points.some(p => bounds.contains([p.lat, p.lng])));
+  }
+  distances = new Map();
+  // 基点：現在地があれば現在地、無ければ「この地図の範囲」では地図の中心
+  const base = origin || (view ? map.getCenter() : null);
+  if (base) {
+    rows.forEach(r => distances.set(r.id, nearestKm(r, base)));
+    rows.sort((a, b) => distances.get(a.id) - distances.get(b.id));
+  }
+  return rows;
+}
+
+function renderListNote() {
+  const notes = [];
+  if (origin && origin.stale) {
+    notes.push(`前回取得した現在地（${originTime()}時点）から近い順（直線距離）。現在地を更新できなかったため、この位置のままです<button type="button" id="clear-origin" class="note-btn">現在地の基準を解除</button>`);
+  } else if (origin) {
+    notes.push('現在地から近い順（直線距離）<button type="button" id="clear-origin" class="note-btn">現在地を解除</button>');
+  }
+  else if (listMode === 'view') notes.push('地図の中心に近い順。地図を動かすと一覧も変わります');
+  $('list-note').hidden = !notes.length;
+  $('list-note').innerHTML = notes.join('');
+  $('clear-origin')?.addEventListener('click', clearOrigin);
+  $('mode-all').setAttribute('aria-pressed', String(listMode === 'all'));
+  $('mode-view').setAttribute('aria-pressed', String(listMode === 'view'));
+  $('mode-view').disabled = !map;
+}
+
 function renderList() {
-  filtered = records.filter(r => matches(r));
+  filtered = listRows();
   $('result-count').textContent = filtered.length;
+  $('result-unit').textContent = listMode === 'view' ? ' 件（この地図の範囲）' : ' 件の土木遺産';
+  renderListNote();
   $('reset').hidden = !hasFilter();
 
   $('scope').hidden = !selectedIds.length;
@@ -161,10 +225,17 @@ function renderList() {
     $('results').innerHTML = filtered.slice(0, limit).map(recordHTML).join('')
       + (rest > 0 ? `<button class="more" id="more">さらに${Math.min(PAGE_SIZE, rest)}件を見る</button>` : '');
   } else {
-    $('results').innerHTML = '<p class="empty">条件に一致する遺産がありません。<br>地名や絞り込み条件を変えてお試しください。</p>';
+    $('results').innerHTML = listMode === 'view'
+      ? '<p class="empty">この地図の範囲に、条件に合う遺産はありません。<br>地図を縮小して広げるか、<button type="button" class="linkish" id="empty-all">条件に合う全件</button>に切り替えてください。</p>'
+      : '<p class="empty">条件に一致する遺産がありません。<br>地名や絞り込み条件を変えてお試しください。</p>';
+    $('empty-all')?.addEventListener('click', () => setListMode('all'));
   }
   $('results').querySelectorAll('[data-id]').forEach(el => {
-    el.addEventListener('click', () => showDetail(el.dataset.id));
+    el.addEventListener('click', () => {
+      const back = { id: el.dataset.id, scroll: $('results').scrollTop };
+      showDetail(el.dataset.id);
+      listReturn = back;
+    });
   });
   $('more')?.addEventListener('click', () => {
     const scroll = $('results').scrollTop;
@@ -266,6 +337,7 @@ function initMap() {
 
   fitNational();
   map.on('zoomend', renderMap);
+  map.on('moveend', onMapMoved);
 
   // 利用者が自分で地図を動かしたら、自動の合わせ直しをやめる
   ['pointerdown', 'wheel', 'keydown'].forEach(type => {
@@ -525,6 +597,12 @@ function showDetail(id, pointIndex = 0, { history: historyMode = 'push' } = {}) 
   const photos = photosOf(r.id);
   let currentPhoto = 0;
   detailId = r.id;
+  selectedRowId = r.id;
+  document.querySelectorAll('#results .record').forEach(row => {
+    const on = row.dataset.id === r.id;
+    row.classList.toggle('is-selected', on);
+    if (on) row.setAttribute('aria-current', 'true'); else row.removeAttribute('aria-current');
+  });
 
   $('detail-content').innerHTML = `${detailPhotoHTML(r)}
     <div class="detail-body">
@@ -572,6 +650,7 @@ function showDetail(id, pointIndex = 0, { history: historyMode = 'push' } = {}) 
   $('detail-content').querySelectorAll('[data-point]').forEach(button => {
     button.addEventListener('click', () => {
       const p = r.points[Number(button.dataset.point)];
+      listReturn = null; // 地図へ移るので、一覧の位置は戻さない
       closeDetail();
       selectedIds = [r.id];
       update();
@@ -627,6 +706,7 @@ function onDetailClosed() {
   if ($('detail').open || detailId === null) return;
   detailId = null;
   $('photo-dialog').open && $('photo-dialog').close();
+  restoreListPosition();
   if (closingFromHistory) { closingFromHistory = false; return; }
   if (pushedDetail) {
     pushedDetail = false;
@@ -635,6 +715,31 @@ function onDetailClosed() {
   } else {
     history.replaceState(null, '', urlWithParam('id', ''));
   }
+}
+
+// 一覧から開いた詳細を閉じたら、一覧のスクロール位置と、開いた行（選択行）を元に戻す
+function restoreListPosition() {
+  const back = listReturn;
+  listReturn = null;
+  if (!back) return;
+  let row = $('results').querySelector(`.record[data-id="${CSS.escape(back.id)}"]`);
+  if (!row) {
+    // 「さらに見る」で出していた行が、描き直しで隠れていたら出し直す
+    const index = filtered.findIndex(r => r.id === back.id);
+    if (index < 0) return;
+    if (index >= limit) {
+      limit = Math.ceil((index + 1) / PAGE_SIZE) * PAGE_SIZE;
+      renderList();
+    }
+    row = $('results').querySelector(`.record[data-id="${CSS.escape(back.id)}"]`);
+    if (!row) return;
+  }
+  $('results').scrollTop = back.scroll;
+  const box = $('results').getBoundingClientRect();
+  const rect = row.getBoundingClientRect();
+  if (rect.top < box.top || rect.bottom > box.bottom) row.scrollIntoView({ block: 'nearest' });
+  // ダイアログが閉じたあとのブラウザ自身のフォーカス移動より後に、開いた行へフォーカスを戻す
+  setTimeout(() => row.isConnected && row.focus({ preventScroll: true }), 0);
 }
 
 // ブラウザの「戻る」「進む」
@@ -655,6 +760,102 @@ function onPopState(event) {
     closingFromHistory = true;
     closeDetail();
   }
+}
+
+/* ---------- 一覧の切り替えと現在地 ---------- */
+
+function setListMode(mode) {
+  if (mode === 'view' && !map) return;
+  listMode = mode;
+  limit = PAGE_SIZE;
+  renderList();
+  $('results').scrollTop = 0;
+}
+
+// 「この地図の範囲」のときは、地図を動かし終えたら一覧を作り直す
+let viewTimer = null;
+function onMapMoved() {
+  if (listMode !== 'view') return;
+  clearTimeout(viewTimer);
+  viewTimer = setTimeout(() => {
+    limit = PAGE_SIZE;
+    renderList();
+    if (!detailId) $('results').scrollTop = 0;
+  }, 150);
+}
+
+function showGeoStatus(message, { offerView = false, offerClear = false } = {}) {
+  const box = $('geo-status');
+  box.hidden = !message;
+  box.innerHTML = message
+    ? `<p>${message}</p>`
+      + (offerClear ? '<button type="button" class="note-btn" id="geo-clear">現在地の基準を解除して通常の並びに戻す</button>' : '')
+      + (offerView && map ? '<button type="button" class="note-btn" id="geo-view">この地図の範囲で探す</button>' : '')
+      + '<button type="button" class="note-btn" id="geo-close">閉じる</button>'
+    : '';
+  $('geo-clear')?.addEventListener('click', clearOrigin);
+  $('geo-view')?.addEventListener('click', () => { showGeoStatus(''); setListMode('view'); });
+  $('geo-close')?.addEventListener('click', () => showGeoStatus(''));
+}
+
+const originTime = () => origin.at.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+
+const GEO_FALLBACK = '地名や遺産名で検索するか、地図を動かして「この地図の範囲」で探せます。';
+
+// 現在地は、ボタンを押したときに1回だけ取る（追いかけ続けない）。外部へは送らない
+function locate() {
+  if (!map) return;
+  if (!('geolocation' in navigator) || !window.isSecureContext) {
+    showGeoStatus('このブラウザ（またはこの開き方）では現在地を使えません。' + GEO_FALLBACK, { offerView: true });
+    return;
+  }
+  $('locate').disabled = true;
+  $('locate').classList.add('is-busy');
+  showGeoStatus('現在地を取得しています…');
+  navigator.geolocation.getCurrentPosition(pos => {
+    $('locate').disabled = false;
+    $('locate').classList.remove('is-busy');
+    origin = { lat: pos.coords.latitude, lng: pos.coords.longitude, at: new Date(), stale: false };
+    showLocation(origin, pos.coords.accuracy);
+    showGeoStatus('');
+    autoFit = null;
+    map.setView([origin.lat, origin.lng], Math.max(map.getZoom(), 11), { animate: false });
+    limit = PAGE_SIZE;
+    renderList();
+    $('results').scrollTop = 0;
+  }, err => {
+    $('locate').disabled = false;
+    $('locate').classList.remove('is-busy');
+    const reason = err.code === 1 ? '位置情報の利用が許可されていません。'
+      : err.code === 3 ? '現在地の取得に時間がかかり、取得できませんでした。'
+      : '現在地を取得できませんでした。';
+    if (origin) {
+      // 前に取れた現在地があるときは、その位置で並び続けていることをはっきり示し、解除できるようにする
+      origin.stale = true;
+      renderList();
+      showGeoStatus(`${reason}一覧は、前回取得した現在地（${originTime()}時点）から近い順のままです。`, { offerClear: true });
+      return;
+    }
+    showGeoStatus(reason + GEO_FALLBACK, { offerView: true });
+  }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 });
+}
+
+function showLocation(at, accuracy) {
+  locateLayer?.remove();
+  locateLayer = L.layerGroup([
+    L.circle([at.lat, at.lng], { radius: Math.min(accuracy || 0, 2000), color: '#2b6cb0', weight: 1, fillColor: '#2b6cb0', fillOpacity: .08, interactive: false }),
+    L.circleMarker([at.lat, at.lng], { radius: 7, color: '#fff', weight: 3, fillColor: '#2b6cb0', fillOpacity: 1, interactive: false })
+  ]).addTo(map);
+}
+
+function clearOrigin() {
+  origin = null;
+  showGeoStatus('');
+  locateLayer?.remove();
+  locateLayer = null;
+  limit = PAGE_SIZE;
+  renderList();
+  $('results').scrollTop = 0;
 }
 
 /* ---------- 周辺地形ビュー（3D） ---------- */
@@ -1031,6 +1232,9 @@ function bindEvents() {
   $('zoom-in').addEventListener('click', () => { autoFit = null; map?.zoomIn(); });
   $('zoom-out').addEventListener('click', () => { autoFit = null; map?.zoomOut(); });
   $('fit').addEventListener('click', () => { selectedIds = []; update(); fitNational(); });
+  $('locate').addEventListener('click', () => { autoFit = null; locate(); });
+  $('mode-all').addEventListener('click', () => setListMode('all'));
+  $('mode-view').addEventListener('click', () => setListMode('view'));
 
   $('about').addEventListener('click', () => $('about-dialog').showModal());
   $('close-about').addEventListener('click', () => $('about-dialog').close());
@@ -1068,7 +1272,8 @@ const REQUIRED_IDS = [
   'map', 'map-error', 'point-total', 'zoom-in', 'zoom-out', 'fit', 'stat-years', 'stat-points',
   'about', 'about-dialog', 'close-about', 'detail', 'detail-content', 'close-detail', 'photo-dialog', 'photo-content', 'close-photo',
   'viewer3d', 'close-3d', 'viewer-map', 'viewer-info', 'viewer-loading', 'viewer-error',
-  'orbit', 'rotate-left', 'rotate-right', 'pitch-up', 'pitch-down', 'reset-3d'
+  'orbit', 'rotate-left', 'rotate-right', 'pitch-up', 'pitch-down', 'reset-3d',
+  'result-unit', 'mode-all', 'mode-view', 'list-note', 'geo-status', 'locate'
 ];
 
 function pageIsOutdated() {

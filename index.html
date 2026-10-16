@@ -17,10 +17,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="leaflet.css?v=591ac50918">
-  <link rel="stylesheet" href="style.css?v=06ae7910ad">
+  <link rel="stylesheet" href="style.css?v=5ee2c2cb53">
   <script defer src="leaflet.js?v=37a1054627"></script>
   <script defer src="photos.js?v=336ecf3d81"></script>
-  <script defer src="app.js?v=09efdba469"></script>
+  <script defer src="app.js?v=6c0e144a85"></script>
 </head>
 <body>
 
@@ -67,9 +67,15 @@
       <div id="categories" class="categories" aria-label="構造物の種類"></div>
     </div>
     <div class="results-bar">
-      <div><strong id="result-count">—</strong><span> 件の土木遺産</span></div>
+      <div><strong id="result-count">—</strong><span id="result-unit"> 件の土木遺産</span></div>
       <button id="reset" class="reset" hidden>条件を解除</button>
     </div>
+    <div class="list-modes" role="group" aria-label="一覧に出す範囲">
+      <button type="button" id="mode-all" class="list-mode" aria-pressed="true">条件に合う全件</button>
+      <button type="button" id="mode-view" class="list-mode" aria-pressed="false">この地図の範囲</button>
+    </div>
+    <div id="list-note" class="list-note" hidden></div>
+    <div id="geo-status" class="geo-status" role="status" hidden></div>
     <div id="scope" class="scope" hidden></div>
     <div id="results" class="results" aria-live="polite">
       <p class="empty">土木遺産を読み込んでいます…</p>
@@ -95,6 +101,8 @@
       <button id="zoom-out" aria-label="縮小">−</button>
       <span></span>
       <button id="fit" aria-label="全国を表示" title="全国を表示">⌖</button>
+      <span></span>
+      <button id="locate" aria-label="現在地を表示して近い順に並べる" title="現在地から近い順"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6" class="dot"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
     </div>
     <div class="map-stat">
       <span class="eyebrow">ARCHIVE IN NUMBERS</span>
