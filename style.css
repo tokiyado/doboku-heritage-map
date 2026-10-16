@@ -1884,3 +1884,285 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible {
 .viewer-nophoto span {
   color: #a9bdc6;
 }
+
+/* 紹介文（narratives/） */
+.narrative-label {
+  display: inline-block;
+  margin: 5px 6px 0 0;
+  color: #24536a;
+  background: #e8f1f5;
+  border-radius: 3px;
+  padding: 3px 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: -12px 0 22px;
+}
+
+.share-btn {
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 1px solid #d5e0e6;
+  border-radius: 5px;
+  background: #fff;
+  color: #264d60;
+  font-size: 13px;
+}
+
+.share-btn:hover {
+  background: #f1f6f8;
+}
+
+.share-status {
+  font-size: 12px;
+  color: #5d7380;
+}
+
+.narrative-lead {
+  margin: 0 0 24px;
+  padding: 18px 0 2px;
+  border-top: 3px solid var(--ink);
+}
+
+.narrative-title {
+  font-size: 19px;
+  line-height: 1.6;
+  margin: 8px 0 12px;
+  letter-spacing: .02em;
+}
+
+.narrative-intro {
+  font-size: 16px;
+  line-height: 1.95;
+  color: #2d4654;
+  margin: 0;
+}
+
+.narrative {
+  overflow-wrap: anywhere;
+}
+
+.narrative-body {
+  margin-top: 26px;
+}
+
+.narrative-body p {
+  font-size: 15.5px;
+  line-height: 2;
+  color: #3a5462;
+  margin: 0 0 1.1em;
+}
+
+.narrative-heading {
+  font-size: 16px;
+  margin: 28px 0 12px;
+}
+
+.narrative-highlights {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+.narrative-highlights li {
+  position: relative;
+  padding: 12px 0 12px 22px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  line-height: 1.8;
+  color: #3a5462;
+}
+
+.narrative-highlights li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 22px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.narrative-people {
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+
+.narrative-people div {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.narrative-people dt {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.narrative-people dd {
+  margin: 3px 0 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #4b6370;
+}
+
+.refs {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 4px;
+  vertical-align: 2px;
+}
+
+.ref {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border: 1px solid #c4d3db;
+  border-radius: 11px;
+  background: #f2f6f8;
+  color: #24536a;
+  font-size: 11px;
+  line-height: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+button.ref:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.narrative-sources {
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.narrative-sources summary {
+  padding: 14px 0;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.narrative-sources summary span {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6a7f8b;
+  margin-left: 6px;
+}
+
+.narrative-sources ol {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.nsource {
+  display: flex;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 5px;
+  scroll-margin: 80px;
+  transition: background .3s;
+}
+
+.nsource.is-target {
+  background: #fff3df;
+}
+
+.nsource:focus {
+  outline: none;
+}
+
+.nsource-num {
+  flex-shrink: 0;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.nsource-text {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.nsource-text a {
+  color: #24536a;
+}
+
+.nsource-text small {
+  display: block;
+  font-size: 12px;
+  color: #6a7f8b;
+}
+
+.nsource-back,
+.linkish {
+  margin-top: 4px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: #24536a;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nsource-back[hidden] {
+  display: none;
+}
+
+.narrative-note {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #6a7f8b;
+  margin: 12px 0 0;
+}
+
+.narrative-error {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #5d7380;
+  background: #f2f6f8;
+  border-radius: 5px;
+  padding: 10px 12px;
+  margin: 0;
+}
+
+.narrative-lead:has(.narrative-error) {
+  border-top: 0;
+  padding-top: 0;
+}
+
+@media(max-width:760px) {
+  .narrative-title {
+    font-size: 18px;
+  }
+  .narrative-body p {
+    font-size: 15px;
+    line-height: 1.95;
+  }
+  .ref {
+    min-width: 26px;
+    height: 26px;
+    line-height: 24px;
+    border-radius: 13px;
+    font-size: 12px;
+  }
+}

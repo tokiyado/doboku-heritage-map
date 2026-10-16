@@ -56,6 +56,7 @@ let filtered = [];
 let category = 'すべて';
 let selectedIds = [];
 let limit = PAGE_SIZE;
+let detailId = null; // 詳細を開いている遺産
 
 let map = null;
 let markers = null;
@@ -84,12 +85,22 @@ const norm = s => String(s).normalize('NFKC').toLowerCase().replace(/\s/g, '');
 
 const color = r => CATEGORY_COLORS[r.category] || CATEGORY_COLORS['その他'];
 
-function setUrlParam(key, value) {
+function urlWithParam(key, value) {
   const url = new URL(location.href);
   if (value) url.searchParams.set(key, value);
   else url.searchParams.delete(key);
-  history.replaceState(null, '', url);
+  return url;
 }
+
+// 履歴の状態（詳細を開いているかどうか）は保ったまま、URL の値だけを書き換える
+function setUrlParam(key, value) {
+  history.replaceState(history.state, '', urlWithParam(key, value));
+}
+
+// index.html の data-version（tools/stamp_version.py が付ける）をデータの URL に付ける。
+// 新しい index.html からは必ず新しいデータを読み、古いデータがブラウザに残っていても使わない
+const DATA_VERSION = document.documentElement.dataset.version || '';
+const withVersion = path => DATA_VERSION ? `${path}?v=${DATA_VERSION}` : path;
 
 /* ---------- 絞り込み ---------- */
 
@@ -128,6 +139,7 @@ function recordHTML(r) {
       <h3>${esc(r.name)}</h3>
       <span class="record-location">${esc(r.location)}</span>
       ${r.points.length > 1 ? `<span class="point-count">${r.points.length}地点の遺産</span>` : ''}
+      ${narrativeIds.has(r.id) ? '<span class="narrative-label">紹介文</span>' : ''}
       ${PILOTS_3D[r.id] ? '<span class="pilot-label">地形ビュー</span>' : ''}
     </span>
   </button>`;
@@ -284,6 +296,181 @@ function reset() {
   fitNational();
 }
 
+/* ---------- 紹介文 ---------- */
+
+// 紹介文は data.json とは別に narratives/ に置く（tools/build_narratives.py が作る公開用の部分だけ）。
+// 一覧（index.json）を最初に読み、本文は詳細を開いたときに1件ずつ読む。読めなくても詳細は従来どおり出す
+let narrativeIndex = null;
+let narrativeIds = new Set(); // 紹介文がある遺産（一覧の印に使う）
+let narrativeBuild = ''; // index.json の作成番号。1件ずつのファイルと同じ版かを確かめる
+const narrativeCache = new Map();
+
+function loadNarrativeIndex() {
+  if (!narrativeIndex) {
+    narrativeIndex = fetch(withVersion('narratives/index.json'))
+      .then(res => { if (!res.ok) throw Error('narratives index'); return res.json(); })
+      .then(doc => { narrativeIds = new Set(doc.ids || []); narrativeBuild = doc.build || ''; return narrativeIds; })
+      .catch(error => {
+        console.warn('紹介文の一覧を読み込めませんでした', error);
+        narrativeIndex = null; // 次に詳細を開いたときにもう一度試す
+        throw error;
+      });
+  }
+  return narrativeIndex;
+}
+
+// 開いたままの古い画面がサイトの更新後に読んだときなど、一覧と1件のファイルの版が合わないことを示す
+function staleError(message) {
+  const error = Error(message);
+  error.stale = true;
+  return error;
+}
+
+async function loadNarrative(id) {
+  const ids = await loadNarrativeIndex();
+  if (!ids.has(id)) return null;
+  if (!narrativeCache.has(id)) {
+    const res = await fetch(withVersion(`narratives/${encodeURIComponent(id)}.json`));
+    if (res.status === 404) throw staleError('narrative removed ' + id);
+    if (!res.ok) throw Error('narrative ' + id);
+    const doc = await res.json();
+    if (doc.id !== id) throw Error('narrative id mismatch ' + id);
+    if ((doc.build || '') !== narrativeBuild) throw staleError('narrative build mismatch ' + id);
+    narrativeCache.set(id, doc);
+  }
+  return narrativeCache.get(id);
+}
+
+// 出典番号のボタン。押すとその遺産の出典一覧の該当箇所へ移る（番号はこの遺産の中だけで通用する）
+function refsHTML(n, refs) {
+  if (!refs || !refs.length) return '';
+  const known = new Set(n.sources.map(s => s.number));
+  return `<span class="refs">${refs.map(num => known.has(num)
+    ? `<button type="button" class="ref" data-ref="${num}" aria-label="出典${num}へ移動">${num}</button>`
+    : `<span class="ref">${num}</span>`).join('')}</span>`;
+}
+
+function sourceHTML(rid, s) {
+  const meta = [s.publisher, s.section, s.published ? `${s.published}` : '', s.accessed ? `${s.accessed} 閲覧` : '']
+    .filter(Boolean).map(esc).join(' ／ ');
+  return `<li id="nsrc-${esc(rid)}-${s.number}" class="nsource" tabindex="-1">
+    <span class="nsource-num">${s.number}</span>
+    <span class="nsource-text">
+      <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)} ↗</a>
+      ${meta ? `<small>${meta}</small>` : ''}
+      ${s.note ? `<small>${esc(s.note)}</small>` : ''}
+      <button type="button" class="nsource-back" hidden>本文に戻る ↑</button>
+    </span>
+  </li>`;
+}
+
+function narrativeLeadHTML(n) {
+  return `<span class="eyebrow">紹介</span>
+    <h3 class="narrative-title">${esc(n.title)}</h3>
+    <p class="narrative-intro">${esc(n.intro)}${refsHTML(n, n.intro_source_refs)}</p>`;
+}
+
+function narrativeBodyHTML(rid, n) {
+  return `<div class="narrative-body">
+      ${n.paragraphs.map(p => `<p>${esc(p.text)}${refsHTML(n, p.source_refs)}</p>`).join('')}
+    </div>
+    ${n.highlights.length ? `<h4 class="narrative-heading">現地で注目したい点</h4>
+      <ul class="narrative-highlights">${n.highlights.map(h => `<li>${esc(h.text)}${refsHTML(n, h.source_refs)}</li>`).join('')}</ul>` : ''}
+    ${n.people.length ? `<h4 class="narrative-heading">関係者と役割</h4>
+      <dl class="narrative-people">${n.people.map(p => `<div><dt>${esc(p.name)}</dt><dd>${esc(p.role)}${refsHTML(n, p.source_refs)}</dd></div>`).join('')}</dl>` : ''}
+    <details class="narrative-sources" id="nsources-${esc(rid)}">
+      <summary>出典 <span>${n.sources.length}件</span></summary>
+      <ol>${n.sources.map(s => sourceHTML(rid, s)).join('')}</ol>
+    </details>
+    <p class="narrative-note">紹介文は公開資料をもとに当サイトが独自に書いたものです。番号を押すと出典に移ります。見学できる範囲は、訪問前に管理者の案内でご確認ください。</p>`;
+}
+
+function bindNarrativeRefs(rid, root) {
+  const sources = root.querySelector('.narrative-sources');
+  let lastRef = null;
+  root.querySelectorAll('button.ref').forEach(button => {
+    button.addEventListener('click', () => {
+      // id はこの遺産の番号だけを持つので、別の遺産の出典に飛ぶことはない
+      const target = root.querySelector(`#nsrc-${CSS.escape(rid)}-${Number(button.dataset.ref)}`);
+      if (!target) return;
+      lastRef = button;
+      sources.open = true;
+      root.querySelectorAll('.nsource.is-target').forEach(el => el.classList.remove('is-target'));
+      root.querySelectorAll('.nsource-back').forEach(b => { b.hidden = true; });
+      target.classList.add('is-target');
+      target.querySelector('.nsource-back').hidden = false;
+      target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      target.focus({ preventScroll: true });
+    });
+  });
+  root.querySelectorAll('.nsource-back').forEach(back => {
+    back.addEventListener('click', () => {
+      if (!lastRef) return;
+      lastRef.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      lastRef.focus({ preventScroll: true });
+    });
+  });
+}
+
+async function fillNarrative(r) {
+  const lead = $('narrative-lead');
+  const body = $('narrative-main');
+  let n = null;
+  try {
+    n = await loadNarrative(r.id);
+  } catch (error) {
+    console.warn(error);
+    if (detailId !== r.id) return;
+    lead.hidden = false;
+    if (error.stale) {
+      // 版の違う紹介文を混ぜて出さない
+      lead.innerHTML = '<p class="narrative-error">このサイトが更新されています。ページを再読み込みすると、最新の紹介文を表示できます。<button type="button" class="linkish" id="narrative-reload">再読み込み</button></p>';
+      $('narrative-reload').addEventListener('click', () => location.reload());
+      return;
+    }
+    // 読めないときは、従来の表示のまま小さく知らせる（写真・地図・リンクはそのまま使える）
+    lead.innerHTML = '<p class="narrative-error">紹介文を読み込めませんでした。通信の状態を確かめてください。<button type="button" class="linkish" id="narrative-retry">もう一度読み込む</button></p>';
+    $('narrative-retry').addEventListener('click', () => { lead.innerHTML = ''; fillNarrative(r); });
+    return;
+  }
+  if (detailId !== r.id) return; // 読み込み中に別の遺産を開いた
+  if (!n) { lead.hidden = true; lead.innerHTML = ''; return; }
+  lead.hidden = false;
+  lead.innerHTML = narrativeLeadHTML(n);
+  body.hidden = false;
+  body.innerHTML = narrativeBodyHTML(r.id, n);
+  $('detail-description')?.remove(); // 紹介文があるときは短い説明文は出さない
+  bindNarrativeRefs(r.id, $('detail-content'));
+}
+
+/* ---------- 共有 ---------- */
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (_) {
+    // 古いブラウザや http で開いているとき
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    $('detail').append(area);
+    area.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+    area.remove();
+    return ok;
+  }
+}
+
+function detailUrl(id) {
+  const url = new URL(location.pathname, location.origin);
+  url.searchParams.set('id', id);
+  return url.href;
+}
+
 /* ---------- 詳細 ---------- */
 
 function licenseLabel(p) {
@@ -329,11 +516,15 @@ function pointRowHTML(r, p, i, current) {
   </div>`;
 }
 
-function showDetail(id, pointIndex = 0) {
+// history: 'push' = 履歴を1つ増やす（「戻る」で閉じられる）／'none' = 履歴を変えない（「進む」で開き直したとき）
+function showDetail(id, pointIndex = 0, { history: historyMode = 'push' } = {}) {
   const r = records.find(r => r.id === id);
   if (!r) return false;
+  // 閉じた直後に開き直すと、ブラウザが close の通知を出さないことがある。その分の後始末をここで済ませる
+  if (!$('detail').open && detailId !== null) onDetailClosed();
   const photos = photosOf(r.id);
   let currentPhoto = 0;
+  detailId = r.id;
 
   $('detail-content').innerHTML = `${detailPhotoHTML(r)}
     <div class="detail-body">
@@ -341,6 +532,11 @@ function showDetail(id, pointIndex = 0) {
       <h2>${esc(r.name)}</h2>
       ${r.reading ? `<p class="detail-reading">${esc(r.reading)}</p>` : ''}
       <p class="detail-location">${esc(r.location)}</p>
+      <div class="detail-actions">
+        <button type="button" id="copy-link" class="share-btn">リンクをコピー</button>
+        <span id="copy-status" class="share-status" role="status"></span>
+      </div>
+      <section id="narrative-lead" class="narrative narrative-lead" aria-label="紹介" hidden></section>
       ${PILOTS_3D[r.id] ? '<button id="open-3d" class="three-d-launch"><span><small>周辺の位置関係</small>周辺地形を見る</span></button>' : ''}
       ${r.statusNote ? `<p class="status-note">${esc(r.statusNote)}</p>` : ''}
       <dl class="detail-facts">
@@ -348,7 +544,8 @@ function showDetail(id, pointIndex = 0) {
         <div><dt>地域</dt><dd>${esc(r.region)}</dd></div>
         <div class="wide"><dt>竣工年（原資料の表記）</dt><dd>${esc(r.built || '原資料の詳細をご確認ください')}</dd></div>
       </dl>
-      ${DESCRIPTIONS[r.id] ? `<p class="detail-description">${esc(DESCRIPTIONS[r.id])}</p>` : ''}
+      ${DESCRIPTIONS[r.id] ? `<p id="detail-description" class="detail-description">${esc(DESCRIPTIONS[r.id])}</p>` : ''}
+      <section id="narrative-main" class="narrative" aria-label="紹介文の本文と出典" hidden></section>
       <h3 class="points-title">この遺産の掲載地点 <span>${r.points.length}</span></h3>
       <div class="point-list">${r.points.map((p, i) => pointRowHTML(r, p, i, pointIndex === i)).join('')}</div>
       <p class="location-note">位置の出典：<a href="https://dobocolle.jsce.or.jp/digital-map/" target="_blank" rel="noopener">土木学会の公開マップ</a>。見学入口を示すものではありません。訪問前に管理者の案内をご確認ください。</p>
@@ -375,7 +572,7 @@ function showDetail(id, pointIndex = 0) {
   $('detail-content').querySelectorAll('[data-point]').forEach(button => {
     button.addEventListener('click', () => {
       const p = r.points[Number(button.dataset.point)];
-      $('detail').close();
+      closeDetail();
       selectedIds = [r.id];
       update();
       autoFit = null;
@@ -384,10 +581,80 @@ function showDetail(id, pointIndex = 0) {
     });
   });
 
+  $('copy-link').addEventListener('click', async () => {
+    const ok = await copyText(detailUrl(r.id));
+    $('copy-status').textContent = ok ? 'コピーしました' : 'コピーできませんでした。アドレス欄のURLをお使いください';
+  });
+
   if (!$('detail').open) $('detail').showModal();
   $('detail').scrollTop = 0;
-  setUrlParam('id', r.id);
+
+  // 詳細を開いたら履歴を1つ増やし、ブラウザの「戻る」で閉じられるようにする
+  if (historyMode === 'push') syncDetailHistory(r.id);
+
+  fillNarrative(r);
   return true;
+}
+
+// 詳細の履歴。自分で積んだ履歴（pushedDetail）だけを戻し、戻している途中（pendingBack）に
+// 別の詳細を開いたときは、戻し終えてから積み直す（素早く閉じて開き直しても履歴がずれないように）
+let closingFromHistory = false;
+let pushedDetail = false;
+let pendingBack = false;
+
+function syncDetailHistory(id) {
+  if (pendingBack) return; // 戻し終えたとき（onPopState）に積む
+  const url = urlWithParam('id', id);
+  if (pushedDetail) {
+    history.replaceState({ detail: id }, '', url);
+  } else {
+    history.pushState({ detail: id }, '', url);
+    pushedDetail = true;
+  }
+}
+
+// 詳細を閉じる。close の通知は届かないこと・遅れることがあるので、通知を待たずにここで後始末する
+// （通知が後から届いても onDetailClosed は1回しか働かない）
+function closeDetail() {
+  if ($('detail').open) $('detail').close();
+  onDetailClosed();
+}
+
+// 詳細が閉じられたとき（×・Esc・背景・「地図で見る」など）。開いたときに増やした履歴を戻す
+
+function onDetailClosed() {
+  // 後始末は1回だけ。開き直したあとに遅れて届いた古い通知は無視する
+  if ($('detail').open || detailId === null) return;
+  detailId = null;
+  $('photo-dialog').open && $('photo-dialog').close();
+  if (closingFromHistory) { closingFromHistory = false; return; }
+  if (pushedDetail) {
+    pushedDetail = false;
+    pendingBack = true;
+    history.back();
+  } else {
+    history.replaceState(null, '', urlWithParam('id', ''));
+  }
+}
+
+// ブラウザの「戻る」「進む」
+function onPopState(event) {
+  if (pendingBack) {
+    // 自分で戻した分。その間に別の詳細を開いていたら、改めて履歴を積む
+    pendingBack = false;
+    if (detailId && $('detail').open) syncDetailHistory(detailId);
+    return;
+  }
+  pushedDetail = false;
+  const id = event.state?.detail;
+  if (id) {
+    showDetail(id, 0, { history: 'none' });
+    return;
+  }
+  if ($('detail').open) {
+    closingFromHistory = true;
+    closeDetail();
+  }
 }
 
 /* ---------- 周辺地形ビュー（3D） ---------- */
@@ -633,7 +900,7 @@ async function open3D(r) {
   const p = r.points[0];
   if (!v || !p) return;
 
-  $('detail').close();
+  closeDetail();
   viewerRecord = r;
   photoView = null;
   renderViewerInfo(r);
@@ -767,9 +1034,12 @@ function bindEvents() {
 
   $('about').addEventListener('click', () => $('about-dialog').showModal());
   $('close-about').addEventListener('click', () => $('about-dialog').close());
-  $('close-detail').addEventListener('click', () => $('detail').close());
+  $('close-detail').addEventListener('click', closeDetail);
+  // Esc で閉じるときも同じ後始末を通す
+  $('detail').addEventListener('cancel', event => { event.preventDefault(); closeDetail(); });
   $('close-photo').addEventListener('click', () => $('photo-dialog').close());
-  $('detail').addEventListener('close', () => setUrlParam('id', ''));
+  $('detail').addEventListener('close', onDetailClosed);
+  window.addEventListener('popstate', onPopState);
 
   // ダイアログの外側（背景）をクリックしたら閉じる
   ['detail', 'about-dialog', 'photo-dialog'].forEach(id => {
@@ -777,7 +1047,7 @@ function bindEvents() {
       if (e.target !== $(id)) return;
       const rect = $(id).getBoundingClientRect();
       const outside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
-      if (outside) $(id).close();
+      if (outside) id === 'detail' ? closeDetail() : $(id).close();
     });
   });
 
@@ -791,10 +1061,35 @@ function bindEvents() {
   $('reset-3d').addEventListener('click', () => { stopOrbit(); reset3DCamera(); });
 }
 
+// index.html に必要な部品がそろっているか。サイトの更新直後に、ブラウザに残った古い index.html と
+// 新しい app.js が組み合わさったときは、壊れた画面を出さずに再読み込みを案内する
+const REQUIRED_IDS = [
+  'search', 'region', 'prefecture', 'year', 'categories', 'reset', 'result-count', 'scope', 'results',
+  'map', 'map-error', 'point-total', 'zoom-in', 'zoom-out', 'fit', 'stat-years', 'stat-points',
+  'about', 'about-dialog', 'close-about', 'detail', 'detail-content', 'close-detail', 'photo-dialog', 'photo-content', 'close-photo',
+  'viewer3d', 'close-3d', 'viewer-map', 'viewer-info', 'viewer-loading', 'viewer-error',
+  'orbit', 'rotate-left', 'rotate-right', 'pitch-up', 'pitch-down', 'reset-3d'
+];
+
+function pageIsOutdated() {
+  const missing = REQUIRED_IDS.filter(id => !$(id));
+  if (!missing.length) return false;
+  console.warn('index.html と app.js の版が合いません', missing);
+  // style.css も古い可能性があるので、見た目はこの場で指定する
+  const note = document.createElement('div');
+  note.setAttribute('role', 'alert');
+  note.style.cssText = 'position:fixed;left:16px;right:16px;top:16px;z-index:5000;padding:14px 16px;border-radius:8px;background:#142b37;color:#fff;font:14px/1.7 sans-serif';
+  note.innerHTML = 'このサイトは更新されています。ページを再読み込みしてください。 <button type="button" style="margin-left:8px;padding:4px 12px;border:0;border-radius:4px;background:#fff;color:#142b37;font:inherit">再読み込み</button>';
+  note.querySelector('button').addEventListener('click', () => location.reload());
+  document.body.append(note);
+  return true;
+}
+
 async function init() {
+  if (pageIsOutdated()) return;
   bindEvents();
   try {
-    const res = await fetch('data.json');
+    const res = await fetch(withVersion('data.json'));
     if (!res.ok) throw Error('data');
     records = await res.json();
   } catch (error) {
@@ -804,6 +1099,12 @@ async function init() {
     return;
   }
 
+  // 紹介文の一覧を先に読んでおく。読めたら一覧に「紹介文」の印を付ける（失敗しても地図と一覧はそのまま使える）
+  loadNarrativeIndex().then(() => {
+    const scroll = $('results').scrollTop;
+    renderList();
+    $('results').scrollTop = scroll;
+  }).catch(() => {});
   sortRecords();
   renderStats();
   buildFilters();
@@ -815,7 +1116,11 @@ async function init() {
   const q = params.get('q');
   if (q) { $('search').value = q; update(); fitFiltered(); }
   const id = params.get('id');
-  if (id) showDetail(id);
+  if (id && records.some(r => r.id === id)) {
+    // 直接開いたときも、地図だけの状態を手前の履歴に置いて、「戻る」で詳細を閉じられるようにする
+    history.replaceState(null, '', urlWithParam('id', ''));
+    showDetail(id);
+  }
 }
 
 init();

@@ -1,1 +1,5 @@
 photo-candidates.html
+# 紹介文の元データ（内部調査メモ research_notes を含む）。公開するのは tools/build_narratives.py が作る narratives/ だけ
+narratives-src/
+# 段階ごとの確認用の差分
+review/
