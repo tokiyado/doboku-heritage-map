@@ -493,14 +493,14 @@ function bindNarrativeRefs(rid, root) {
       root.querySelectorAll('.nsource-back').forEach(b => { b.hidden = true; });
       target.classList.add('is-target');
       target.querySelector('.nsource-back').hidden = false;
-      target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      target.scrollIntoView({ block: 'center' });
       target.focus({ preventScroll: true });
     });
   });
   root.querySelectorAll('.nsource-back').forEach(back => {
     back.addEventListener('click', () => {
       if (!lastRef) return;
-      lastRef.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      lastRef.scrollIntoView({ block: 'center' });
       lastRef.focus({ preventScroll: true });
     });
   });
@@ -650,6 +650,10 @@ function showDetail(id, pointIndex = 0, { history: historyMode = 'push' } = {}) 
       <div class="point-list">${r.points.map((p, i) => pointRowHTML(r, p, i, pointIndex === i)).join('')}</div>
       <p class="location-note">位置の出典：<a href="https://dobocolle.jsce.or.jp/digital-map/" target="_blank" rel="noopener">土木学会の公開マップ</a>。見学入口を示すものではありません。訪問前に管理者の案内をご確認ください。</p>
       <a class="primary-link" href="${esc(r.url)}" target="_blank" rel="noopener">土木学会の解説・写真を見る <span>↗</span></a>
+      <div class="detail-actions detail-actions-end">
+        <button type="button" id="copy-link-end" class="share-btn">この遺産のリンクをコピー</button>
+        <span id="copy-status-end" class="share-status" role="status"></span>
+      </div>
     </div>`;
 
   $('expand-photo')?.addEventListener('click', () => {
@@ -682,9 +686,11 @@ function showDetail(id, pointIndex = 0, { history: historyMode = 'push' } = {}) 
     });
   });
 
-  $('copy-link').addEventListener('click', async () => {
-    const ok = await copyText(detailUrl(r.id));
-    $('copy-status').textContent = ok ? 'コピーしました' : 'コピーできませんでした。アドレス欄のURLをお使いください';
+  [['copy-link', 'copy-status'], ['copy-link-end', 'copy-status-end']].forEach(([buttonId, statusId]) => {
+    $(buttonId).addEventListener('click', async () => {
+      const ok = await copyText(detailUrl(r.id));
+      $(statusId).textContent = ok ? 'コピーしました' : 'コピーできませんでした。アドレス欄のURLをお使いください';
+    });
   });
 
   if (!$('detail').open) $('detail').showModal();
