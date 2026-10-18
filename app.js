@@ -167,7 +167,7 @@ function recordHTML(r) {
       <span class="record-location">${esc(r.location)}</span>
       ${distances.has(r.id) && origin ? `<span class="record-distance">${formatDistance(distances.get(r.id))}</span>` : ''}
       ${r.points.length > 1 ? `<span class="point-count">${r.points.length}地点の遺産</span>` : ''}
-      ${narrativeIds.has(r.id) ? '<span class="narrative-label">紹介文</span>' : ''}
+      ${narrativeIds.has(r.id) && narrativeIds.size < records.length ? '<span class="narrative-label">紹介文</span>' : ''}
       ${PILOTS_3D[r.id] ? '<span class="pilot-label">地形ビュー</span>' : ''}
     </span>
   </button>`;
@@ -374,14 +374,18 @@ function reset() {
 // 一覧（index.json）を最初に読み、本文は詳細を開いたときに1件ずつ読む。読めなくても詳細は従来どおり出す
 let narrativeIndex = null;
 let narrativeIds = new Set(); // 紹介文がある遺産（一覧の印に使う）
-let narrativeBuild = ''; // index.json の作成番号。1件ずつのファイルと同じ版かを確かめる
-const narrativeCache = new Map();
+let narrativeVersions = new Map(); // 遺産ID → その紹介文の版（index.json）。1件のファイルと同じ版かを確かめる
+const narrativeCache = new Map(); // 遺産ID → 読み込み中または読み込んだ紹介文（Promise）。同じ原稿を二重に読まない
 
 function loadNarrativeIndex() {
   if (!narrativeIndex) {
     narrativeIndex = fetch(withVersion('narratives/index.json'))
       .then(res => { if (!res.ok) throw Error('narratives index'); return res.json(); })
-      .then(doc => { narrativeIds = new Set(doc.ids || []); narrativeBuild = doc.build || ''; return narrativeIds; })
+      .then(doc => {
+        narrativeVersions = new Map(Object.entries(doc.items || {}));
+        narrativeIds = new Set(narrativeVersions.keys());
+        return narrativeIds;
+      })
       .catch(error => {
         console.warn('紹介文の一覧を読み込めませんでした', error);
         narrativeIndex = null; // 次に詳細を開いたときにもう一度試す
@@ -398,17 +402,25 @@ function staleError(message) {
   return error;
 }
 
+async function fetchNarrative(id) {
+  // 版を URL に付けるので、原稿が更新されたときだけ読み直し、同じ版はブラウザに残ったものを使える
+  const res = await fetch(`narratives/${encodeURIComponent(id)}.json?v=${encodeURIComponent(narrativeVersions.get(id))}`);
+  if (res.status === 404) throw staleError('narrative removed ' + id);
+  if (!res.ok) throw Error('narrative ' + id);
+  const doc = await res.json();
+  if (doc.id !== id) throw Error('narrative id mismatch ' + id);
+  if ((doc.build || '') !== narrativeVersions.get(id)) throw staleError('narrative build mismatch ' + id);
+  return doc;
+}
+
 async function loadNarrative(id) {
   const ids = await loadNarrativeIndex();
   if (!ids.has(id)) return null;
   if (!narrativeCache.has(id)) {
-    const res = await fetch(withVersion(`narratives/${encodeURIComponent(id)}.json`));
-    if (res.status === 404) throw staleError('narrative removed ' + id);
-    if (!res.ok) throw Error('narrative ' + id);
-    const doc = await res.json();
-    if (doc.id !== id) throw Error('narrative id mismatch ' + id);
-    if ((doc.build || '') !== narrativeBuild) throw staleError('narrative build mismatch ' + id);
-    narrativeCache.set(id, doc);
+    // 読み込み中のものも覚えておき、続けて開いても二重に読まない。失敗したら忘れて、再試行できるようにする
+    const pending = fetchNarrative(id);
+    narrativeCache.set(id, pending);
+    pending.catch(() => narrativeCache.delete(id));
   }
   return narrativeCache.get(id);
 }
@@ -418,19 +430,29 @@ function refsHTML(n, refs) {
   if (!refs || !refs.length) return '';
   const known = new Set(n.sources.map(s => s.number));
   return `<span class="refs">${refs.map(num => known.has(num)
-    ? `<button type="button" class="ref" data-ref="${num}" aria-label="出典${num}へ移動">${num}</button>`
-    : `<span class="ref">${num}</span>`).join('')}</span>`;
+    ? `<button type="button" class="ref" data-ref="${Number(num)}" aria-label="出典${Number(num)}へ移動">${Number(num)}</button>`
+    : `<span class="ref">${esc(num)}</span>`).join('')}</span>`;
+}
+
+// 出典のリンクは http(s) の URL だけにする（それ以外は資料名だけを文字で出す）
+function safeUrl(url) {
+  try {
+    const u = new URL(String(url));
+    return u.protocol === 'https:' || u.protocol === 'http:' ? u.href : '';
+  } catch (_) {
+    return '';
+  }
 }
 
 function sourceHTML(rid, s) {
-  const meta = [s.publisher, s.section, s.published ? `${s.published}` : '', s.accessed ? `${s.accessed} 閲覧` : '']
+  const meta = [s.publisher, s.section, s.published != null && s.published !== '' ? `${s.published}` : '', s.accessed ? `${s.accessed} 閲覧` : '']
     .filter(Boolean).map(esc).join(' ／ ');
-  return `<li id="nsrc-${esc(rid)}-${s.number}" class="nsource" tabindex="-1">
-    <span class="nsource-num">${s.number}</span>
+  const url = safeUrl(s.url);
+  return `<li id="nsrc-${esc(rid)}-${Number(s.number)}" class="nsource" tabindex="-1">
+    <span class="nsource-num">${Number(s.number)}</span>
     <span class="nsource-text">
-      <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)} ↗</a>
+      ${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(s.title)} ↗</a>` : `<span>${esc(s.title)}</span>`}
       ${meta ? `<small>${meta}</small>` : ''}
-      ${s.note ? `<small>${esc(s.note)}</small>` : ''}
       <button type="button" class="nsource-back" hidden>本文に戻る ↑</button>
     </span>
   </li>`;
