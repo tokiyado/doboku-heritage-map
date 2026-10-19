@@ -1,6 +1,7 @@
-// 同梱写真（すべて Wikimedia Commons 由来）。1遺産に複数枚あるときは先頭が一覧用の代表写真。
+// 同梱写真（Wikimedia Commons 由来と、国土交通省ウェブサイトの写真1枚＝PDL1.0）。1遺産に複数枚あるときは先頭が一覧用の代表写真。
 // 作者・題名・ライセンス・出典は THIRD-PARTY-NOTICES.md にも記載。土木学会の写真は掲載しない。
 // facility は複数の施設からなる遺産で、どの施設の写真かを示す（空なら遺産全体）。
+// creditLabel は表示の頭の言葉（省略時は「写真」。国土交通省の写真は利用規約に合わせて「出典」）。
 const LOCAL_PHOTOS = {
   "2000_2": [
     {"src": "photos/2000_2-1.jpg", "thumb": "photos/2000_2-1-thumb.jpg", "by": "Ebiebi2", "title": "Nobiru Port Ruins 3", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "source": "https://commons.wikimedia.org/wiki/File:Nobiru_Port_Ruins_3.jpg", "facility": "野蒜築港跡"},
@@ -771,5 +772,38 @@ const LOCAL_PHOTOS = {
   "2026_20": [
     {"src": "photos/2026_20-1.jpg", "thumb": "photos/2026_20-1-thumb.jpg", "by": "WEI, WAN-CHEN（魏琬臻）", "title": "來義鄉二峰圳＜2＞", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "source": "https://commons.wikimedia.org/wiki/File:%E4%BE%86%E7%BE%A9%E9%84%89%E4%BA%8C%E5%B3%B0%E5%9C%B3%EF%BC%9C2%EF%BC%9E.jpg", "facility": "二峰圳"},
     {"src": "photos/2026_20-2.jpg", "thumb": "photos/2026_20-2-thumb.jpg", "by": "WEI, WAN-CHEN（魏琬臻）", "title": "來義鄉二峰圳＜1＞", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "source": "https://commons.wikimedia.org/wiki/File:%E4%BE%86%E7%BE%A9%E9%84%89%E4%BA%8C%E5%B3%B0%E5%9C%B3%EF%BC%9C1%EF%BC%9E.jpg", "facility": "二峰圳"}
+  ],
+  "2000_1": [
+    {"src": "photos/2000_1-1.jpg", "thumb": "photos/2000_1-1.jpg", "by": "国土交通省ウェブサイト「小樽港」", "creditLabel": "出典", "title": "北防波堤を含む小樽港の航空写真", "license": "PDL1.0", "licenseUrl": "https://www.digital.go.jp/resources/open_data/public_data_license_v1.0", "source": "https://www.mlit.go.jp/sogoseisaku/region/infratourism/infralist/hokkaido/index05.html", "facility": ""}
+  ],
+  "2001_2": [
+    {"src": "photos/2001_2-1.jpg", "thumb": "photos/2001_2-1-thumb.jpg", "by": "河川一等兵", "title": "Ominato Ⅰ suigenchi weir", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "source": "https://commons.wikimedia.org/wiki/File:Ominato_%E2%85%A0_suigenchi_weir.jpg", "facility": ""}
+  ],
+  "2001_3": [
+    {"src": "photos/2001_3-1.jpg", "thumb": "photos/2001_3-1-thumb.jpg", "by": "Damsuki", "title": "Marunumadam-2005-10-28 10-33-48 Fri -1130463228-.01", "license": "Public domain", "licenseUrl": "", "source": "https://commons.wikimedia.org/wiki/File:Marunumadam-2005-10-28_10-33-48_Fri_-1130463228-.01.jpg", "facility": ""}
+  ],
+  "2003_4": [
+    {"src": "photos/2003_4-1.jpg", "thumb": "photos/2003_4-1-thumb.jpg", "by": "Crown of Lenten rose（Commons の作者欄による推定）", "title": "Aterazawa Mogami Bridge Morning 2006", "license": "CC BY 3.0", "licenseUrl": "https://creativecommons.org/licenses/by/3.0/", "source": "https://commons.wikimedia.org/wiki/File:Aterazawa_Mogami_Bridge_Morning_2006.jpg", "facility": ""}
+  ],
+  "2003_5": [
+    {"src": "photos/2003_5-1.jpg", "thumb": "photos/2003_5-1-thumb.jpg", "by": "京浜にけ", "title": "Goka Sekiyado Water Gate 1", "license": "CC BY-SA 3.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/", "source": "https://commons.wikimedia.org/wiki/File:Goka_Sekiyado_Water_Gate_1.JPG", "facility": "関宿水門"}
+  ],
+  "2003_11": [
+    {"src": "photos/2003_11-1.jpg", "thumb": "photos/2003_11-1-thumb.jpg", "by": "Kazue Asano", "title": "Ruin of an arsenal on Tomogashima Island - from flickr 31000150145", "license": "CC BY-SA 2.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/", "source": "https://commons.wikimedia.org/wiki/File:Ruin_of_an_arsenal_on_Tomogashima_Island_-_from_flickr_31000150145.jpg", "facility": ""}
+  ],
+  "2003_12": [
+    {"src": "photos/2003_12-1.jpg", "thumb": "photos/2003_12-1-thumb.jpg", "by": "Tatushin", "title": "Skazu Sluiceway", "license": "Public domain", "licenseUrl": "", "source": "https://commons.wikimedia.org/wiki/File:Skazu_Sluiceway.JPG", "facility": ""}
+  ],
+  "2003_13": [
+    {"src": "photos/2003_13-1.jpg", "thumb": "photos/2003_13-1-thumb.jpg", "by": "Spiegel", "title": "千本ダム 松江市西忌部町 Sep 12, 2026", "license": "CC BY 4.0", "licenseUrl": "https://creativecommons.org/licenses/by/4.0/", "source": "https://commons.wikimedia.org/wiki/File:%E5%8D%83%E6%9C%AC%E3%83%80%E3%83%A0_%E6%9D%BE%E6%B1%9F%E5%B8%82%E8%A5%BF%E5%BF%8C%E9%83%A8%E7%94%BA_Sep_12%2C_2026.jpg", "facility": ""}
+  ],
+  "2004_11": [
+    {"src": "photos/2004_11-1.jpg", "thumb": "photos/2004_11-1-thumb.jpg", "by": "beck", "title": "Kyoto Railway Museum roundhouse 2021-11-22", "license": "CC0", "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/", "source": "https://commons.wikimedia.org/wiki/File:Kyoto_Railway_Museum_roundhouse_2021-11-22.jpg", "facility": ""}
+  ],
+  "2005_9": [
+    {"src": "photos/2005_9-1.jpg", "thumb": "photos/2005_9-1-thumb.jpg", "by": "Missile shot", "title": "Oohikagetunnel-yuhodo", "license": "CC BY-SA 3.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/", "source": "https://commons.wikimedia.org/wiki/File:Oohikagetunnel-yuhodo.JPG", "facility": "旧大日影トンネル"}
+  ],
+  "2009_22": [
+    {"src": "photos/2009_22-1.jpg", "thumb": "photos/2009_22-1-thumb.jpg", "by": "Tam0031", "title": "Yatake Daiichi tunnel", "license": "CC BY-SA 3.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/", "source": "https://commons.wikimedia.org/wiki/File:Yatake_Daiichi_tunnel.jpg", "facility": ""}
   ]
 };

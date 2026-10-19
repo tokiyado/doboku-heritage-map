@@ -9,25 +9,34 @@
 
 ## 同梱写真
 
-同梱している写真は、すべて [Wikimedia Commons](https://commons.wikimedia.org/) から取得したものです（203件の遺産に計364枚）。土木学会の写真は含みません。
+同梱している写真は、[Wikimedia Commons](https://commons.wikimedia.org/) から取得したもの（213件の遺産に計374枚）と、国土交通省ウェブサイトの写真1枚（小樽港北防波堤）です。合わせて214件の遺産に計375枚。土木学会の写真は含みません。
 写真ごとの作者・題名・ライセンス・出典は下記のとおりで、画面にも写真ごとに作者とライセンスを表示しています。
 
 ### 改変について
-- 表示用に長辺1280px以内へ縮小しています。`-thumb` の付くファイルは、一覧用に正方形へ切り抜いて192pxに縮小したものです。
+- Wikimedia Commons の写真は、表示用に長辺1280px以内へ縮小しています。`-thumb` の付くファイルは、一覧用に正方形へ切り抜いて192pxに縮小したものです。
 - CC BY-SA の写真を改変した画像は、元と同じライセンス（同じ版の CC BY-SA）で提供します。
 - CC BY の写真は作者とライセンスの表示が条件です。CC0 とパブリックドメインの写真に表示義務はありませんが、出典を記載しています。
 
 ### ライセンス
-- CC BY-SA 4.0（152枚）：https://creativecommons.org/licenses/by-sa/4.0/
-- CC BY-SA 3.0（117枚）：https://creativecommons.org/licenses/by-sa/3.0/
-- CC BY-SA 2.0（7枚）：https://creativecommons.org/licenses/by-sa/2.0/
-- CC BY 4.0（13枚）：https://creativecommons.org/licenses/by/4.0/
-- CC BY 3.0（31枚）：https://creativecommons.org/licenses/by/3.0/
+- CC BY-SA 4.0（153枚）：https://creativecommons.org/licenses/by-sa/4.0/
+- CC BY-SA 3.0（120枚）：https://creativecommons.org/licenses/by-sa/3.0/
+- CC BY-SA 2.0（8枚）：https://creativecommons.org/licenses/by-sa/2.0/
+- CC BY 4.0（14枚）：https://creativecommons.org/licenses/by/4.0/
+- CC BY 3.0（32枚）：https://creativecommons.org/licenses/by/3.0/
 - CC BY 2.5（6枚）：https://creativecommons.org/licenses/by/2.5/
 - CC BY 2.1 jp（2枚）：https://creativecommons.org/licenses/by/2.1/jp/
 - CC BY 2.0（9枚）：https://creativecommons.org/licenses/by/2.0/
-- CC0（9枚）：https://creativecommons.org/publicdomain/zero/1.0/
-- パブリックドメイン（18枚）：Wikimedia Commons 上でパブリックドメインとされているもの。根拠は各ファイルページに記載されています。
+- CC0（10枚）：https://creativecommons.org/publicdomain/zero/1.0/
+- パブリックドメイン（20枚）：Wikimedia Commons 上でパブリックドメインとされているもの。根拠は各ファイルページに記載されています。
+- 公共データ利用規約（第1.0版）PDL1.0（1枚）：https://www.digital.go.jp/resources/open_data/public_data_license_v1.0
+
+### 国土交通省ウェブサイトの写真（PDL1.0）
+- photos/2000_1-1.jpg — 小樽港北防波堤：北防波堤を含む小樽港の航空写真
+  出典：国土交通省ウェブサイト「小樽港」（インフラツーリズムポータル） https://www.mlit.go.jp/sogoseisaku/region/infratourism/infralist/hokkaido/index05.html
+  原画像：https://www.mlit.go.jp/sogoseisaku/region/infratourism/infralist/hokkaido/img/05/01.jpg
+  利用条件：国土交通省ウェブサイトの利用規約（https://www.mlit.go.jp/link.html）により、別段の表示のないコンテンツには公共データ利用規約（第1.0版）PDL1.0 が適用されます。
+- 画像は加工していません（原画像と同じファイル。一覧の小さな表示は、画面上で切り抜いて表示しているだけです）。
+- 国土交通省がこのサイトを作成・推奨しているものではありません。著作権放棄・CC0 の写真ではありません。
 
 ### 写真の一覧
 
@@ -762,6 +771,26 @@
   出典：https://commons.wikimedia.org/wiki/File:%E4%BE%86%E7%BE%A9%E9%84%89%E4%BA%8C%E5%B3%B0%E5%9C%B3%EF%BC%9C2%EF%BC%9E.jpg
 - photos/2026_20-2.jpg / 2026_20-2-thumb.jpg — 二峰圳および力里渓水圳（二峰圳）：WEI, WAN-CHEN（魏琬臻）, “來義鄉二峰圳＜1＞”, CC BY-SA 4.0
   出典：https://commons.wikimedia.org/wiki/File:%E4%BE%86%E7%BE%A9%E9%84%89%E4%BA%8C%E5%B3%B0%E5%9C%B3%EF%BC%9C1%EF%BC%9E.jpg
+- photos/2001_2-1.jpg / 2001_2-1-thumb.jpg — 大湊第一水源地堰堤：河川一等兵, “Ominato Ⅰ suigenchi weir”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Ominato_%E2%85%A0_suigenchi_weir.jpg
+- photos/2001_3-1.jpg / 2001_3-1-thumb.jpg — 丸沼ダム：Damsuki, “Marunumadam-2005-10-28 10-33-48 Fri -1130463228-.01”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:Marunumadam-2005-10-28_10-33-48_Fri_-1130463228-.01.jpg
+- photos/2003_4-1.jpg / 2003_4-1-thumb.jpg — 最上橋：Crown of Lenten rose（Commons の作者欄による推定）, “Aterazawa Mogami Bridge Morning 2006”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Aterazawa_Mogami_Bridge_Morning_2006.jpg
+- photos/2003_5-1.jpg / 2003_5-1-thumb.jpg — 関宿水閘門（関宿水門）：京浜にけ, “Goka Sekiyado Water Gate 1”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Goka_Sekiyado_Water_Gate_1.JPG
+- photos/2003_11-1.jpg / 2003_11-1-thumb.jpg — 友ヶ島砲台群：Kazue Asano, “Ruin of an arsenal on Tomogashima Island - from flickr 31000150145”, CC BY-SA 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Ruin_of_an_arsenal_on_Tomogashima_Island_-_from_flickr_31000150145.jpg
+- photos/2003_12-1.jpg / 2003_12-1-thumb.jpg — 東西用水酒津樋門：Tatushin, “Skazu Sluiceway”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:Skazu_Sluiceway.JPG
+- photos/2003_13-1.jpg / 2003_13-1-thumb.jpg — 千本堰堤：Spiegel, “千本ダム 松江市西忌部町 Sep 12, 2026”, CC BY 4.0
+  出典：https://commons.wikimedia.org/wiki/File:%E5%8D%83%E6%9C%AC%E3%83%80%E3%83%A0_%E6%9D%BE%E6%B1%9F%E5%B8%82%E8%A5%BF%E5%BF%8C%E9%83%A8%E7%94%BA_Sep_12%2C_2026.jpg
+- photos/2004_11-1.jpg / 2004_11-1-thumb.jpg — 梅小路機関車庫：beck, “Kyoto Railway Museum roundhouse 2021-11-22”, CC0
+  出典：https://commons.wikimedia.org/wiki/File:Kyoto_Railway_Museum_roundhouse_2021-11-22.jpg
+- photos/2005_9-1.jpg / 2005_9-1-thumb.jpg — 旧大日影トンネル・旧深沢トンネル（旧大日影トンネル）：Missile shot, “Oohikagetunnel-yuhodo”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Oohikagetunnel-yuhodo.JPG
+- photos/2009_22-1.jpg / 2009_22-1-thumb.jpg — 矢岳第一トンネル：Tam0031, “Yatake Daiichi tunnel”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Yatake_Daiichi_tunnel.jpg
 
 ## 地図・ライブラリ
 - Leaflet 1.9.4：https://leafletjs.com/ — BSD 2-Clause（同梱 LICENSE-Leaflet.txt）

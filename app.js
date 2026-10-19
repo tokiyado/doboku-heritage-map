@@ -576,7 +576,7 @@ function photoCredit(p) {
     ? `<a href="${esc(p.licenseUrl)}" target="_blank" rel="noopener">${esc(licenseLabel(p))}</a>`
     : esc(licenseLabel(p));
   return `${p.facility ? `<span class="photo-facility">${esc(p.facility)}</span>` : ''}`
-    + `写真：<a href="${esc(p.source)}" target="_blank" rel="noopener">${esc(p.by)}</a> / ${license}`;
+    + `${esc(p.creditLabel || '写真')}：<a href="${esc(p.source)}" target="_blank" rel="noopener">${esc(p.by)}</a> / ${license}`;
 }
 
 function photoAlt(r, p) {
@@ -1011,7 +1011,7 @@ function renderViewerInfo(r) {
     ? `<img id="viewer-photo-img" src="${esc(local.src)}" alt="${esc(photoAlt(r, local))}">`
     : '<div class="viewer-nophoto"><span>土木学会の写真は掲載していません。</span></div>';
   const credit = local
-    ? `<a id="viewer-credit" class="viewer-credit" href="${esc(local.source)}" target="_blank" rel="noopener">写真：${esc(local.by)} / ${esc(licenseLabel(local))} ↗</a>`
+    ? `<p id="viewer-credit" class="viewer-credit">${photoCredit(local)}</p>`
     : `<a id="viewer-credit" class="viewer-credit" href="${esc(r.url)}" target="_blank" rel="noopener">公式ページで写真を見る ↗</a>`;
 
   $('viewer-info').innerHTML = `<div class="viewer-kicker">周辺地形 · ${r.year}</div>
