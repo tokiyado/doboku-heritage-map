@@ -3,3 +3,5 @@ photo-candidates.html
 narratives-src/
 # 段階ごとの確認用の差分
 review/
+# 自分の写真の作業用（元写真の場所・撮影位置・公開前の画像・判定表）。公開するのは photos/mine/ と photos-mine.js だけ
+mine-src/

@@ -18,7 +18,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INDEX = os.path.join(ROOT, "index.html")
-ASSETS = ["leaflet.css", "style.css", "leaflet.js", "photos.js", "app.js"]
+ASSETS = ["leaflet.css", "style.css", "leaflet.js", "photos-mine.js", "photos.js", "app.js"]
 
 
 def digest(paths):

@@ -14,7 +14,11 @@ const CATEGORY_COLORS = {
 };
 
 // 同梱している写真の一覧（LOCAL_PHOTOS）は photos.js にある。土木学会の写真は掲載せず、公式ページへリンクする。
-const photosOf = id => (typeof LOCAL_PHOTOS === 'object' && LOCAL_PHOTOS[id]) || [];
+// ときやどが撮った写真（photos-mine.js、tools/import_my_photos.py が作る）を先に、その後に Wikimedia Commons などの写真を並べる
+const photosOf = id => [
+  ...((typeof MINE_PHOTOS === 'object' && MINE_PHOTOS[id]) || []),
+  ...((typeof LOCAL_PHOTOS === 'object' && LOCAL_PHOTOS[id]) || [])
+];
 
 const DESCRIPTIONS = {
   '2000_4': '東京湾の防衛を担った要塞。明治期の煉瓦構造を間近に見られる遺構です。',
@@ -575,8 +579,12 @@ function photoCredit(p) {
   const license = p.licenseUrl
     ? `<a href="${esc(p.licenseUrl)}" target="_blank" rel="noopener">${esc(licenseLabel(p))}</a>`
     : esc(licenseLabel(p));
+  // 自分の写真は出典ページが無いので、撮影者と撮影日だけを文字で出す
+  const by = p.source
+    ? `<a href="${esc(p.source)}" target="_blank" rel="noopener">${esc(p.by)}</a>`
+    : esc(p.by) + (p.taken ? `（${esc(p.taken)} 撮影）` : '');
   return `${p.facility ? `<span class="photo-facility">${esc(p.facility)}</span>` : ''}`
-    + `${esc(p.creditLabel || '写真')}：<a href="${esc(p.source)}" target="_blank" rel="noopener">${esc(p.by)}</a> / ${license}`;
+    + `${esc(p.creditLabel || '写真')}：${by} / ${license}`;
 }
 
 function photoAlt(r, p) {
