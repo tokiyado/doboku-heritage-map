@@ -2304,3 +2304,307 @@ button.ref:hover {
     right: 14px;
   }
 }
+
+/* 一覧の高さを確保するため、検索・絞り込みの部分を詰める */
+.explorer-head {
+  padding: 14px 20px 12px;
+}
+
+.explorer-head .eyebrow {
+  display: none;
+}
+
+.explorer h1 {
+  font-size: 17px;
+  margin: 0 0 10px;
+}
+
+.search-box {
+  height: 38px;
+  gap: 8px;
+  padding: 0 11px;
+}
+
+.search-box svg {
+  width: 16px;
+  height: 16px;
+}
+
+.selectors {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.selectors #year {
+  grid-column: auto;
+}
+
+.selectors select {
+  height: 32px;
+  padding: 0 6px;
+  font-size: 12.5px;
+}
+
+.categories {
+  gap: 5px;
+  margin-top: 9px;
+}
+
+.category {
+  padding: 3px 9px;
+  min-height: 26px;
+  font-size: 12px;
+  gap: 5px;
+}
+
+.results-bar {
+  padding: 8px 20px;
+}
+
+.results-bar strong {
+  font-size: 17px;
+}
+
+.list-modes {
+  margin: 0 20px 8px;
+}
+
+.list-mode {
+  min-height: 30px;
+  font-size: 12.5px;
+}
+
+.list-note,
+.geo-status,
+.scope {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+/* 画面の高さが低いときは、サイドバーの見出しを省いて一覧を広くする */
+@media(max-height:860px) and (min-width:761px) {
+  .explorer h1 {
+    display: none;
+  }
+}
+
+/* 地図の上の見出しは、枠で囲まず、文字の周りに地図の色をぼかした縁を付けて読みやすくする */
+.map-heading .eyebrow,
+.map-heading h2,
+.map-heading p {
+  text-shadow: 0 0 2px #f4f7f8, 0 0 6px #f4f7f8, 0 0 14px #f4f7f8, 0 0 24px rgba(244, 247, 248, .9);
+}
+
+.map-heading .eyebrow {
+  color: #4b6370;
+}
+
+.map-heading h2 {
+  color: #142b37;
+}
+
+.map-heading p {
+  color: #3a5462;
+}
+
+/* 地点数は左下の数字と重なるので、見出しの横には出さない */
+.map-badge {
+  display: none !important;
+}
+
+.map-note {
+  background: rgba(255, 255, 255, .94);
+  color: #36525f;
+}
+
+@media(max-width:760px) {
+  .explorer-head {
+    padding: 12px 16px 10px;
+  }
+  .search-box {
+    height: 40px;
+  }
+  .selectors select {
+    height: 34px;
+  }
+  .categories {
+    margin-top: 8px;
+  }
+  .list-modes,
+  .list-note,
+  .geo-status,
+  .scope {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .results-bar {
+    padding: 8px 16px;
+  }
+}
+
+/* 一覧の行も少し詰める */
+.record {
+  padding: 12px 8px;
+}
+
+.record h3 {
+  margin: 3px 0;
+}
+
+/* スマホでは地図の見出しを小さくして、地図を広く見せる */
+@media(max-width:760px) {
+  .map-heading .eyebrow {
+    display: none;
+  }
+  .map-heading>div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .map-heading h2 {
+    font-size: 15px;
+    margin: 0;
+  }
+  .map-badge {
+    margin: 0;
+  }
+}
+
+/* 見出しの縁取りを強め、拡大したときは見出しを消す（地図の文字と重ならないように） */
+.map-heading {
+  transition: opacity .35s ease;
+}
+
+.map-heading .eyebrow,
+.map-heading h2 {
+  text-shadow: 0 0 1px #f4f7f8, 0 0 1px #f4f7f8, 0 0 3px #f4f7f8, 0 0 3px #f4f7f8, 0 0 8px #f4f7f8, 0 0 16px #f4f7f8, 0 0 28px rgba(244, 247, 248, .9);
+}
+
+.map-surface.is-zoomed .map-heading {
+  opacity: 0;
+}
+
+/* 上部のヘッダーを細くし、収録数を「この地図について」の左に横長で置く。
+   表示倍率を上げた画面でも地図の下端まで収まるよう、最低の高さも下げる */
+.topbar {
+  height: 64px;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 39px;
+  font-size: 27px;
+}
+
+.brand-mark span {
+  font-size: 17px;
+}
+
+.workspace {
+  height: calc(100dvh - 64px);
+  min-height: 420px;
+}
+
+.top-right {
+  gap: 28px;
+}
+
+.top-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  color: #71818b;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.top-stats-main strong {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -.02em;
+  margin-right: 4px;
+}
+
+.top-stats-item {
+  padding-left: 14px;
+  border-left: 1px solid var(--border);
+}
+
+@media(max-width:1000px) {
+  #stat-years {
+    display: none;
+  }
+}
+
+@media(max-width:760px) {
+  .topbar {
+    height: 71px;
+  }
+  .workspace {
+    height: calc(100dvh - 71px);
+    min-height: 670px;
+  }
+  .top-stats {
+    display: none;
+  }
+}
+
+/* 地図の操作ボタン：アイコンを同じ線の太さ・同じ大きさにそろえる */
+.map-controls button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+}
+
+.map-controls button svg,
+.map-controls #locate svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 説明はカーソルと重ならないよう、ボタンの左側に出す（ブラウザ標準の吹き出しは使わない） */
+.map-controls button[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 9px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+
+.map-controls button[data-tip]:hover::after,
+.map-controls button[data-tip]:focus-visible::after {
+  opacity: 1;
+}
+
+@media(hover:none) {
+  .map-controls button[data-tip]::after {
+    display: none;
+  }
+}
+
+@media(max-width:760px) {
+  .map-controls button svg,
+  .map-controls #locate svg {
+    width: 18px;
+    height: 18px;
+  }
+}

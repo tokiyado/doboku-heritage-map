@@ -318,6 +318,14 @@ function fitNational() {
   });
 }
 
+// 開いたときの表示：全国表示から1段階近づけ、本州を中心に置く（「全国を表示」ボタンは全国表示のまま）
+function fitOpening() {
+  if (!map) return;
+  fitNational();
+  autoFit = fitOpening;
+  map.setView([36.9, 136.2], map.getZoom() + 1, { animate: false });
+}
+
 function fitFiltered() {
   if (!map) return;
   const coords = records.filter(r => matches(r)).flatMap(r => r.points.map(p => [p.lat, p.lng]));
@@ -339,8 +347,12 @@ function initMap() {
     .addTo(map);
   markers = L.layerGroup().addTo(map);
 
-  fitNational();
+  fitOpening();
   map.on('zoomend', renderMap);
+  // 地図を拡大すると、見出し（全体のメッセージ）は地図の文字と重なって読みにくいので、そっと消す
+  const toggleHeading = () => document.querySelector('.map-surface').classList.toggle('is-zoomed', map.getZoom() >= 7);
+  map.on('zoomend', toggleHeading);
+  toggleHeading();
   map.on('moveend', onMapMoved);
 
   // 利用者が自分で地図を動かしたら、自動の合わせ直しをやめる
@@ -1215,8 +1227,8 @@ function renderStats() {
   const points = records.reduce((n, r) => n + r.points.length, 0);
   const values = { records: records.length, points, years: `${first}〜${last}`, 'years-en': `${first} — ${last}` };
   document.querySelectorAll('[data-stat]').forEach(el => { el.textContent = values[el.dataset.stat]; });
-  $('stat-years').textContent = `${first}–${last}年度の選奨記録`;
-  $('stat-points').textContent = `${points}地点 · 全国・海外`;
+  $('stat-years').textContent = `${first}–${last}年度の選奨`;
+  $('stat-points').textContent = `${points}地点（全国・海外）`;
 }
 
 function buildFilters() {

@@ -17,11 +17,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="leaflet.css?v=591ac50918">
-  <link rel="stylesheet" href="style.css?v=4d51eed586">
+  <link rel="stylesheet" href="style.css?v=cde70df1e2">
   <script defer src="leaflet.js?v=37a1054627"></script>
   <script defer src="photos-mine.js?v=e3eb79744f"></script>
   <script defer src="photos.js?v=313ae07df5"></script>
-  <script defer src="app.js?v=c2e72ecae4"></script>
+  <script defer src="app.js?v=ce819ea4d2"></script>
 </head>
 <body>
 
@@ -31,7 +31,11 @@
     <span>土木遺産アトラス<small>HERITAGE ATLAS / JAPAN</small></span>
   </a>
   <div class="top-right">
-    <span class="edition" data-stat="years-en"></span>
+    <div class="top-stats" aria-label="収録数">
+      <span class="top-stats-main"><strong data-stat="records">—</strong><span>土木遺産</span></span>
+      <span id="stat-points" class="top-stats-item"></span>
+      <span id="stat-years" class="top-stats-item"></span>
+    </div>
     <button id="about" class="quiet">この地図について ↗</button>
   </div>
 </header>
@@ -47,7 +51,7 @@
       </label>
       <div class="selectors">
         <select id="region" aria-label="地域">
-          <option value="">全国すべて</option>
+          <option value="">全国</option>
           <option>北海道</option>
           <option>東北</option>
           <option>関東・甲信越</option>
@@ -59,10 +63,10 @@
           <option>海外</option>
         </select>
         <select id="prefecture" aria-label="都道府県・地域">
-          <option value="">都道府県・地域すべて</option>
+          <option value="">都道府県</option>
         </select>
         <select id="year" aria-label="選奨年度">
-          <option value="">選奨年度すべて</option>
+          <option value="">選奨年度</option>
         </select>
       </div>
       <div id="categories" class="categories" aria-label="構造物の種類"></div>
@@ -95,24 +99,16 @@
         <h2 id="map-title">日本を、つくってきた風景。</h2>
         <span class="map-badge" id="point-total"></span>
       </div>
-      <p id="map-subtitle">数字で地域を拡大。ピンから遺産の詳細へ。</p>
     </div>
     <div class="map-controls">
-      <button id="zoom-in" aria-label="拡大">＋</button>
-      <button id="zoom-out" aria-label="縮小">−</button>
+      <button id="zoom-in" aria-label="拡大" data-tip="拡大"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button id="zoom-out" aria-label="縮小" data-tip="縮小"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
       <span></span>
-      <button id="fit" aria-label="全国を表示" title="全国を表示">⌖</button>
+      <button id="fit" aria-label="全国を表示" data-tip="全国を表示"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
       <span></span>
-      <button id="locate" aria-label="現在地を表示して近い順に並べる" title="現在地から近い順"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6" class="dot"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+      <button id="locate" aria-label="現在地を表示して近い順に並べる" data-tip="現在地から近い順"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6" class="dot"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
     </div>
-    <div class="map-stat">
-      <span class="eyebrow">ARCHIVE IN NUMBERS</span>
-      <div><strong data-stat="records">—</strong><span>土木遺産</span></div>
-      <p id="stat-years"></p>
-      <div class="stat-line"></div>
-      <small id="stat-points"></small>
-    </div>
-    <div class="map-note">ⓘ 土木学会の公開マップに基づく位置。数字は地点数です。</div>
+    <div class="map-note">ⓘ 数字（地点数）で拡大、ピンで遺産の詳細へ。位置は土木学会の公開マップに基づきます。</div>
     <div id="map-error" class="map-error" hidden>背景地図を読み込めません。遺産一覧と検索は引き続き使えます。</div>
   </section>
 </main>
