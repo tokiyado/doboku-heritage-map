@@ -63,7 +63,7 @@ AUTO_M = 30      # これ以内は自動で決める
 CHECK_M = 100    # これ以内は確認待ち
 OWNER = "ときやど"
 LICENSE = "無断転載禁止"
-ID_IN_NAME = re.compile(r"(?<![0-9])([0-9]{4}_[0-9]{1,2})(?![0-9])")
+ID_IN_NAME = re.compile(r"(?<![0-9A-Za-z])([0-9]{4}_[0-9]{1,2}|jd-[0-9]+)(?![0-9])")
 
 
 def rel(path):
@@ -178,6 +178,11 @@ def main():
 
     with open(DATA, encoding="utf-8") as f:
         data = {r["id"]: r for r in json.load(f)}
+    designated_path = os.path.join(ROOT, "designated.json")  # 国の重要文化財（土木系・選奨外）の地点も振り分けに使う
+    if os.path.exists(designated_path):
+        with open(designated_path, encoding="utf-8") as f:
+            for r in json.load(f):
+                data.setdefault(r["id"], r)
     points = [(hid, i, p) for hid, r in data.items() for i, p in enumerate(r["points"])]
 
     records = {}
@@ -199,7 +204,14 @@ def main():
                 continue
             sha = file_sha(path)
             if sha in by_sha:
-                records[by_sha[sha]]["original"] = os.path.relpath(path, source)
+                old = records[by_sha[sha]]
+                old["original"] = os.path.relpath(path, source)
+                # まだ遺産が決まっていない写真は、地点が増えたとき（国の重要文化財など）に候補を選び直す
+                if not old["heritage"] and old["how"] != "対象外" and old["lat"] is not None:
+                    d, hid, idx = nearest(points, old["lat"], old["lng"])
+                    old["distance_m"], old["candidate"] = round(d), [hid, idx]
+                    if d <= AUTO_M:
+                        old["heritage"], old["point"], old["how"] = hid, idx, f"自動（{round(d)}m）"
                 continue
             meta = read_meta(path)
             if meta is None:

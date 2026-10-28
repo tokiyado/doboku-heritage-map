@@ -4,6 +4,7 @@
 - 土木学会 選奨土木遺産：https://www.jsce.or.jp/contents/isan/
 - 年度別一覧：https://www.jsce.or.jp/contents/isan/list/index.html
 - 座標：https://dobocolle.jsce.or.jp/digital-map/
+- 国の重要文化財（土木系・選奨外）：同じ公開マップの「国宝・重要文化財（建造物）マップ」の層から、名称・種別・時代・指定年月日・所在地・位置・文化遺産オンライン（https://bunka.nii.ac.jp/）のURLだけを designated.json に収録（解説文・写真は収録しない）。
 - 各記録の公式解説のURLは data.json、座標の取得情報は coordinate-provenance.json に記録。
 - 土木学会の写真は本パッケージに含まず、画面にも表示しません。各遺産の詳細から公式ページへリンクしています。
 

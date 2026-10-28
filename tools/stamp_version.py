@@ -37,7 +37,7 @@ def stamped(html):
         html, n = re.subn(pattern, r"\g<1>" + name + "?v=" + ver + r"\g<2>", html)
         if n != 1:
             raise SystemExit(f"index.html で {name} の読み込みが {n} か所見つかりました（1か所のはず）")
-    data_files = [os.path.join(ROOT, "data.json")] + sorted(glob.glob(os.path.join(ROOT, "narratives", "*.json")))
+    data_files = [os.path.join(ROOT, "data.json"), os.path.join(ROOT, "designated.json")] + sorted(glob.glob(os.path.join(ROOT, "narratives", "*.json")))
     ver = digest(data_files)
     html, n = re.subn(r'<html lang="ja"(?: data-version="[0-9a-f]*")?>', f'<html lang="ja" data-version="{ver}">', html)
     if n != 1:

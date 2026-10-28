@@ -2608,3 +2608,80 @@ button.ref:hover {
     height: 18px;
   }
 }
+
+/* 国の重要文化財（土木系・選奨外）：ひし形の印で区別する */
+.site-dot.designated {
+  border-radius: 3px;
+  transform: rotate(45deg) scale(.9);
+  background: #fff;
+  border: 4px solid var(--cat);
+  box-shadow: 0 2px 9px #142b3750;
+}
+
+.site-dot.designated:hover,
+.site-dot.designated.selected {
+  transform: rotate(45deg) scale(1.15);
+}
+
+.designated-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  font-size: 12.5px;
+  color: #3a5462;
+  cursor: pointer;
+}
+
+.designated-toggle[hidden] {
+  display: none;
+}
+
+.designated-toggle small {
+  color: #7a8b94;
+}
+
+.designated-mark {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #4b6370;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.record-kind,
+.detail-kind {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid #b9c7cf;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #3a5462;
+  background: #fff;
+}
+
+.detail-kind {
+  margin-left: 6px;
+  vertical-align: 1px;
+}
+
+.designated-note {
+  margin: 0 0 16px;
+  padding: 9px 12px;
+  border-radius: 5px;
+  background: #f2f6f8;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #3a5462;
+}
+
+/* 地点の行のリンクが3つになっても折り返して読めるように */
+.point-row>div {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.point-row button {
+  white-space: nowrap;
+}

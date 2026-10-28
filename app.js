@@ -95,6 +95,10 @@ const norm = s => String(s).normalize('NFKC').toLowerCase().replace(/\s/g, '');
 
 const color = r => CATEGORY_COLORS[r.category] || CATEGORY_COLORS['その他'];
 
+// 国の重要文化財（土木系）で、選奨土木遺産ではないもの（designated.json、tools/build_designated.py が作る）
+const isDesignated = r => r.type === 'designated';
+const isSelected = r => !isDesignated(r);
+
 function urlWithParam(key, value) {
   const url = new URL(location.href);
   if (value) url.searchParams.set(key, value);
@@ -118,6 +122,7 @@ function matches(r, includeScope = true) {
   const q = norm($('search').value);
   const text = [r.name, r.reading, r.location, ...r.prefectures, ...r.points.map(p => p.name)].join(' ');
   return (!q || norm(text).includes(q))
+    && (!isDesignated(r) || $('show-designated').checked)
     && (!$('region').value || r.region === $('region').value)
     && (!$('prefecture').value || r.prefectures.includes($('prefecture').value))
     && (!$('year').value || r.year === Number($('year').value))
@@ -126,7 +131,7 @@ function matches(r, includeScope = true) {
 }
 
 function hasFilter() {
-  return category !== 'すべて' || selectedIds.length > 0
+  return category !== 'すべて' || selectedIds.length > 0 || !$('show-designated').checked
     || Boolean($('region').value || $('prefecture').value || $('year').value || $('search').value);
 }
 
@@ -165,13 +170,13 @@ function recordHTML(r) {
     <span class="record-text">
       <span class="record-top">
         <span class="record-category" style="--cat:${color(r)}">${esc(r.category)}</span>
-        <span class="record-year">${r.year}</span>
+        ${isDesignated(r) ? `<span class="record-kind">${esc(r.kind)}</span>` : `<span class="record-year">${r.year}</span>`}
       </span>
       <h3>${esc(r.name)}</h3>
       <span class="record-location">${esc(r.location)}</span>
       ${distances.has(r.id) && origin ? `<span class="record-distance">${formatDistance(distances.get(r.id))}</span>` : ''}
       ${r.points.length > 1 ? `<span class="point-count">${r.points.length}地点の遺産</span>` : ''}
-      ${narrativeIds.has(r.id) && narrativeIds.size < records.length ? '<span class="narrative-label">紹介文</span>' : ''}
+      ${narrativeIds.has(r.id) && narrativeIds.size < records.filter(isSelected).length ? '<span class="narrative-label">紹介文</span>' : ''}
       ${PILOTS_3D[r.id] ? '<span class="pilot-label">地形ビュー</span>' : ''}
     </span>
   </button>`;
@@ -214,7 +219,9 @@ function renderListNote() {
 function renderList() {
   filtered = listRows();
   $('result-count').textContent = filtered.length;
-  $('result-unit').textContent = listMode === 'view' ? ' 件（この地図の範囲）' : ' 件の土木遺産';
+  const designatedCount = filtered.filter(isDesignated).length;
+  $('result-unit').textContent = (listMode === 'view' ? ' 件（この地図の範囲）' : ' 件')
+    + (designatedCount ? `（うち国の重要文化財 ${designatedCount}件）` : (listMode === 'view' ? '' : 'の土木遺産'));
   renderListNote();
   $('reset').hidden = !hasFilter();
 
@@ -284,7 +291,7 @@ function renderMap() {
     const selected = ids.some(id => selectedIds.includes(id)) ? 'selected' : '';
     const title = single ? first.p.name : `${n}地点・${ids.length}件の遺産`;
     const html = single
-      ? `<span class="site-dot ${selected}" style="--cat:${color(first.r)}"></span>`
+      ? `<span class="site-dot ${selected} ${isDesignated(first.r) ? 'designated' : ''}" style="--cat:${color(first.r)}"></span>`
       : `<span class="cluster-bubble ${n > 30 ? 'large' : ''} ${selected}">${n}</span>`;
 
     const marker = L.marker(center, {
@@ -379,6 +386,7 @@ function reset() {
   $('region').value = '';
   $('prefecture').value = '';
   $('year').value = '';
+  $('show-designated').checked = true;
   setUrlParam('q', '');
   update();
   fitNational();
@@ -606,6 +614,12 @@ function photoAlt(r, p) {
 function detailPhotoHTML(r) {
   const photos = photosOf(r.id);
   const local = photos[0];
+  if (!local && isDesignated(r)) {
+    return `<div class="detail-nophoto" style="--cat:${color(r)}">
+      <span>写真は文化遺産オンライン（文化庁）でご覧ください。</span>
+      ${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">文化遺産オンラインで見る ↗</a>` : ''}
+    </div>`;
+  }
   if (!local) {
     return `<div class="detail-nophoto" style="--cat:${color(r)}">
       <span>このサイトでは土木学会の写真を掲載していません。</span>
@@ -626,6 +640,7 @@ function pointRowHTML(r, p, i, current) {
     <div>
       <button data-point="${i}">地図で見る</button>
       <a href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}" target="_blank" rel="noopener" aria-label="${esc(p.name)}をGoogleマップで開く">Googleマップ ↗</a>
+      ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener" aria-label="${esc(p.name)}を文化遺産オンラインで開く">文化遺産オンライン ↗</a>` : ''}
     </div>
   </div>`;
 }
@@ -649,6 +664,7 @@ function showDetail(id, pointIndex = 0, { history: historyMode = 'push' } = {}) 
   $('detail-content').innerHTML = `${detailPhotoHTML(r)}
     <div class="detail-body">
       <span class="detail-tag" style="--cat:${color(r)}">${esc(r.category)}</span>
+      ${isDesignated(r) ? `<span class="detail-kind">国の${esc(r.kind)}</span>` : ''}
       <h2>${esc(r.name)}</h2>
       ${r.reading ? `<p class="detail-reading">${esc(r.reading)}</p>` : ''}
       <p class="detail-location">${esc(r.location)}</p>
@@ -659,17 +675,24 @@ function showDetail(id, pointIndex = 0, { history: historyMode = 'push' } = {}) 
       <section id="narrative-lead" class="narrative narrative-lead" aria-label="紹介" hidden></section>
       ${PILOTS_3D[r.id] ? '<button id="open-3d" class="three-d-launch"><span><small>周辺の位置関係</small>周辺地形を見る</span></button>' : ''}
       ${r.statusNote ? `<p class="status-note">${esc(r.statusNote)}</p>` : ''}
+      ${isDesignated(r) ? `<p class="designated-note">国の${esc(r.kind)}（建造物）です。土木学会の選奨土木遺産ではありません。</p>
       <dl class="detail-facts">
+        <div><dt>${esc(r.kind)}の指定</dt><dd>${esc(r.treasure || r.designated || '—')}</dd></div>
+        <div><dt>地域</dt><dd>${esc(r.region)}</dd></div>
+        <div class="wide"><dt>時代（文化財データの表記）</dt><dd>${esc(r.built || '—')}</dd></div>
+      </dl>` : `<dl class="detail-facts">
         <div><dt>選奨年度</dt><dd>${r.year}<small> 年度</small></dd></div>
         <div><dt>地域</dt><dd>${esc(r.region)}</dd></div>
         <div class="wide"><dt>竣工年（原資料の表記）</dt><dd>${esc(r.built || '原資料の詳細をご確認ください')}</dd></div>
-      </dl>
+      </dl>`}
       ${DESCRIPTIONS[r.id] ? `<p id="detail-description" class="detail-description">${esc(DESCRIPTIONS[r.id])}</p>` : ''}
       <section id="narrative-main" class="narrative" aria-label="紹介文の本文と出典" hidden></section>
-      <h3 class="points-title">この遺産の掲載地点 <span>${r.points.length}</span></h3>
+      <h3 class="points-title">${isDesignated(r) ? '指定されている建造物' : 'この遺産の掲載地点'} <span>${r.points.length}</span></h3>
       <div class="point-list">${r.points.map((p, i) => pointRowHTML(r, p, i, pointIndex === i)).join('')}</div>
-      <p class="location-note">位置の出典：<a href="https://dobocolle.jsce.or.jp/digital-map/" target="_blank" rel="noopener">土木学会の公開マップ</a>。見学入口を示すものではありません。訪問前に管理者の案内をご確認ください。</p>
-      <a class="primary-link" href="${esc(r.url)}" target="_blank" rel="noopener">土木学会の解説・写真を見る <span>↗</span></a>
+      <p class="location-note">位置の出典：<a href="https://dobocolle.jsce.or.jp/digital-map/" target="_blank" rel="noopener">土木学会の公開マップ</a>${isDesignated(r) ? '（国宝・重要文化財の層）' : ''}。見学入口を示すものではありません。訪問前に管理者の案内をご確認ください。</p>
+      ${isDesignated(r)
+        ? (r.url ? `<a class="primary-link" href="${esc(r.url)}" target="_blank" rel="noopener">文化遺産オンライン（文化庁）で見る <span>↗</span></a>` : '')
+        : `<a class="primary-link" href="${esc(r.url)}" target="_blank" rel="noopener">土木学会の解説・写真を見る <span>↗</span></a>`}
       <div class="detail-actions detail-actions-end">
         <button type="button" id="copy-link-end" class="share-btn">この遺産のリンクをコピー</button>
         <span id="copy-status-end" class="share-status" role="status"></span>
@@ -1216,23 +1239,26 @@ function dispose3D() {
 
 function sortRecords() {
   const number = r => Number(r.id.split('_')[1]);
-  records.sort((a, b) => b.year - a.year || number(a) - number(b));
+  // 選奨土木遺産を年度の新しい順に並べ、国の重要文化財はその後ろ（名称順）
+  records.sort((a, b) => isDesignated(a) - isDesignated(b)
+    || (isDesignated(a) ? a.name.localeCompare(b.name, 'ja') : b.year - a.year || number(a) - number(b)));
 }
 
 // 件数・地点数・年度の表示は data.json から算出する
 function renderStats() {
-  const years = records.map(r => r.year);
+  const selected = records.filter(isSelected);
+  const years = selected.map(r => r.year);
   const first = Math.min(...years);
   const last = Math.max(...years);
-  const points = records.reduce((n, r) => n + r.points.length, 0);
-  const values = { records: records.length, points, years: `${first}〜${last}`, 'years-en': `${first} — ${last}` };
+  const points = selected.reduce((n, r) => n + r.points.length, 0);
+  const values = { records: selected.length, points, years: `${first}〜${last}`, 'years-en': `${first} — ${last}` };
   document.querySelectorAll('[data-stat]').forEach(el => { el.textContent = values[el.dataset.stat]; });
   $('stat-years').textContent = `${first}–${last}年度の選奨`;
   $('stat-points').textContent = `${points}地点（全国・海外）`;
 }
 
 function buildFilters() {
-  [...new Set(records.map(r => r.year))].sort((a, b) => b - a).forEach(y => {
+  [...new Set(records.filter(isSelected).map(r => r.year))].sort((a, b) => b - a).forEach(y => {
     const option = document.createElement('option');
     option.value = y;
     option.textContent = y + '年度';
@@ -1283,6 +1309,7 @@ function bindEvents() {
   $('locate').addEventListener('click', () => { autoFit = null; locate(); });
   $('mode-all').addEventListener('click', () => setListMode('all'));
   $('mode-view').addEventListener('click', () => setListMode('view'));
+  $('show-designated').addEventListener('change', () => { selectedIds = []; update(); });
 
   $('about').addEventListener('click', () => $('about-dialog').showModal());
   $('close-about').addEventListener('click', () => $('about-dialog').close());
@@ -1321,7 +1348,8 @@ const REQUIRED_IDS = [
   'about', 'about-dialog', 'close-about', 'detail', 'detail-content', 'close-detail', 'photo-dialog', 'photo-content', 'close-photo',
   'viewer3d', 'close-3d', 'viewer-map', 'viewer-info', 'viewer-loading', 'viewer-error',
   'orbit', 'rotate-left', 'rotate-right', 'pitch-up', 'pitch-down', 'reset-3d',
-  'result-unit', 'mode-all', 'mode-view', 'list-note', 'geo-status', 'locate'
+  'result-unit', 'mode-all', 'mode-view', 'list-note', 'geo-status', 'locate',
+  'designated-toggle', 'show-designated', 'designated-count'
 ];
 
 function pageIsOutdated() {
@@ -1358,6 +1386,17 @@ async function init() {
     renderList();
     $('results').scrollTop = scroll;
   }).catch(() => {});
+  // 国の重要文化財（土木系）を足す。読めなくても選奨土木遺産だけで動く
+  try {
+    const res = await fetch(withVersion('designated.json'));
+    if (!res.ok) throw Error('designated');
+    const designated = (await res.json()).filter(r => r.type === 'designated' && !records.some(x => x.id === r.id));
+    records.push(...designated);
+    $('designated-count').textContent = designated.length;
+  } catch (error) {
+    console.warn('国の重要文化財の一覧を読み込めませんでした（選奨土木遺産だけを表示します）', error);
+    $('designated-toggle').hidden = true;
+  }
   sortRecords();
   renderStats();
   buildFilters();
