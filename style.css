@@ -2685,3 +2685,36 @@ button.ref:hover {
 .point-row button {
   white-space: nowrap;
 }
+
+/* ヘッダーの国の重要文化財の件数（地図のひし形の印と対応） */
+.top-stats-designated {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity .2s;
+}
+
+.top-stats-designated[hidden] {
+  display: none;
+}
+
+.top-stats-designated .designated-mark {
+  width: 8px;
+  height: 8px;
+}
+
+.top-stats-designated.is-off {
+  opacity: .4;
+}
+
+@media(max-width:1250px) {
+  #stat-years {
+    display: none;
+  }
+}
+
+@media(max-width:960px) {
+  .top-stats-designated {
+    display: none;
+  }
+}

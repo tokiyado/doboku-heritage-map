@@ -387,6 +387,7 @@ function reset() {
   $('prefecture').value = '';
   $('year').value = '';
   $('show-designated').checked = true;
+  $('stat-designated').classList.remove('is-off');
   setUrlParam('q', '');
   update();
   fitNational();
@@ -1309,7 +1310,12 @@ function bindEvents() {
   $('locate').addEventListener('click', () => { autoFit = null; locate(); });
   $('mode-all').addEventListener('click', () => setListMode('all'));
   $('mode-view').addEventListener('click', () => setListMode('view'));
-  $('show-designated').addEventListener('change', () => { selectedIds = []; update(); });
+  $('show-designated').addEventListener('change', () => {
+    // ヘッダーの重要文化財の件数は、地図に出していないときは薄くする
+    $('stat-designated').classList.toggle('is-off', !$('show-designated').checked);
+    selectedIds = [];
+    update();
+  });
 
   $('about').addEventListener('click', () => $('about-dialog').showModal());
   $('close-about').addEventListener('click', () => $('about-dialog').close());
@@ -1393,6 +1399,8 @@ async function init() {
     const designated = (await res.json()).filter(r => r.type === 'designated' && !records.some(x => x.id === r.id));
     records.push(...designated);
     $('designated-count').textContent = designated.length;
+    $('stat-designated-count').textContent = designated.length;
+    $('stat-designated').hidden = !designated.length;
   } catch (error) {
     console.warn('国の重要文化財の一覧を読み込めませんでした（選奨土木遺産だけを表示します）', error);
     $('designated-toggle').hidden = true;
