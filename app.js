@@ -176,7 +176,7 @@ function recordHTML(r) {
       <span class="record-location">${esc(r.location)}</span>
       ${distances.has(r.id) && origin ? `<span class="record-distance">${formatDistance(distances.get(r.id))}</span>` : ''}
       ${r.points.length > 1 ? `<span class="point-count">${r.points.length}地点の遺産</span>` : ''}
-      ${narrativeIds.has(r.id) && narrativeIds.size < records.filter(isSelected).length ? '<span class="narrative-label">紹介文</span>' : ''}
+      ${narrativeIds.has(r.id) && narrativeIds.size < records.length ? '<span class="narrative-label">紹介文</span>' : ''}
       ${PILOTS_3D[r.id] ? '<span class="pilot-label">地形ビュー</span>' : ''}
     </span>
   </button>`;

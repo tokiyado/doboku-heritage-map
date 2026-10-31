@@ -4,13 +4,13 @@
 - 土木学会 選奨土木遺産：https://www.jsce.or.jp/contents/isan/
 - 年度別一覧：https://www.jsce.or.jp/contents/isan/list/index.html
 - 座標：https://dobocolle.jsce.or.jp/digital-map/
-- 国の重要文化財（土木系・選奨外）：同じ公開マップの「国宝・重要文化財（建造物）マップ」の層から、名称・種別・時代・指定年月日・所在地・位置・文化遺産オンライン（https://bunka.nii.ac.jp/）のURLだけを designated.json に収録（解説文・写真は収録しない）。
+- 国の重要文化財（土木系・選奨外）：同じ公開マップの「国宝・重要文化財（建造物）マップ」の層から、名称・種別・時代・指定年月日・所在地・位置・文化遺産オンライン（https://bunka.nii.ac.jp/）のURLだけを designated.json に収録（この層の解説文・写真は収録しない）。55件の紹介文（narratives/jd-*.json）は、文化遺産オンライン・国指定文化財等データベース（文化庁）などの公開資料をもとに当サイトが独自に書いたもので、出典を各紹介文に記載。
 - 各記録の公式解説のURLは data.json、座標の取得情報は coordinate-provenance.json に記録。
 - 土木学会の写真は本パッケージに含まず、画面にも表示しません。各遺産の詳細から公式ページへリンクしています。
 
 ## 同梱写真
 
-同梱している写真は、[Wikimedia Commons](https://commons.wikimedia.org/) から取得したもの（213件の遺産に計374枚）と、国土交通省ウェブサイトの写真1枚（小樽港北防波堤）です。合わせて214件の遺産に計375枚。土木学会の写真は含みません。
+同梱している写真は、[Wikimedia Commons](https://commons.wikimedia.org/) から取得したもの（262件の遺産に計467枚。うち国の重要文化財49件に93枚）と、国土交通省ウェブサイトの写真1枚（小樽港北防波堤）です。合わせて263件の遺産に計468枚。土木学会の写真は含みません。
 写真ごとの作者・題名・ライセンス・出典は下記のとおりで、画面にも写真ごとに作者とライセンスを表示しています。
 
 ### 改変について
@@ -19,16 +19,16 @@
 - CC BY の写真は作者とライセンスの表示が条件です。CC0 とパブリックドメインの写真に表示義務はありませんが、出典を記載しています。
 
 ### ライセンス
-- CC BY-SA 4.0（153枚）：https://creativecommons.org/licenses/by-sa/4.0/
-- CC BY-SA 3.0（120枚）：https://creativecommons.org/licenses/by-sa/3.0/
-- CC BY-SA 2.0（8枚）：https://creativecommons.org/licenses/by-sa/2.0/
-- CC BY 4.0（14枚）：https://creativecommons.org/licenses/by/4.0/
-- CC BY 3.0（32枚）：https://creativecommons.org/licenses/by/3.0/
-- CC BY 2.5（6枚）：https://creativecommons.org/licenses/by/2.5/
+- CC BY-SA 4.0（176枚）：https://creativecommons.org/licenses/by-sa/4.0/
+- CC BY-SA 3.0（153枚）：https://creativecommons.org/licenses/by-sa/3.0/
+- CC BY-SA 2.0（10枚）：https://creativecommons.org/licenses/by-sa/2.0/
+- CC BY 4.0（16枚）：https://creativecommons.org/licenses/by/4.0/
+- CC BY 3.0（43枚）：https://creativecommons.org/licenses/by/3.0/
+- CC BY 2.5（10枚）：https://creativecommons.org/licenses/by/2.5/
 - CC BY 2.1 jp（2枚）：https://creativecommons.org/licenses/by/2.1/jp/
-- CC BY 2.0（9枚）：https://creativecommons.org/licenses/by/2.0/
-- CC0（10枚）：https://creativecommons.org/publicdomain/zero/1.0/
-- パブリックドメイン（20枚）：Wikimedia Commons 上でパブリックドメインとされているもの。根拠は各ファイルページに記載されています。
+- CC BY 2.0（15枚）：https://creativecommons.org/licenses/by/2.0/
+- CC0（13枚）：https://creativecommons.org/publicdomain/zero/1.0/
+- パブリックドメイン（29枚）：Wikimedia Commons 上でパブリックドメインとされているもの。根拠は各ファイルページに記載されています。
 - 公共データ利用規約（第1.0版）PDL1.0（1枚）：https://www.digital.go.jp/resources/open_data/public_data_license_v1.0
 
 ### 国土交通省ウェブサイトの写真（PDL1.0）
@@ -792,6 +792,192 @@
   出典：https://commons.wikimedia.org/wiki/File:Oohikagetunnel-yuhodo.JPG
 - photos/2009_22-1.jpg / 2009_22-1-thumb.jpg — 矢岳第一トンネル：Tam0031, “Yatake Daiichi tunnel”, CC BY-SA 3.0
   出典：https://commons.wikimedia.org/wiki/File:Yatake_Daiichi_tunnel.jpg
+- photos/jd-149-1.jpg / jd-149-1-thumb.jpg — 藤倉水源地水道施設（堰堤）：Ocavis Leechroot, “Fujikura Dam (藤倉ダム) - panoramio”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Fujikura_Dam_(%E8%97%A4%E5%80%89%E3%83%80%E3%83%A0)_-_panoramio.jpg
+- photos/jd-149-2.jpg / jd-149-2-thumb.jpg — 藤倉水源地水道施設（堰堤）：掬茶, “Fujikura Dam”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Fujikura_Dam.jpg
+- photos/jd-554-1.jpg / jd-554-1-thumb.jpg — 旧弾正橋（八幡橋）：三人日, “Hachimanbashi20111228”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Hachimanbashi20111228.jpg
+- photos/jd-574-1.jpg / jd-574-1-thumb.jpg — 旧横浜船渠株式会社第二号船渠（ドック）：Vantey, “Dock Yard Garden 20091024 2”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:Dock_Yard_Garden_20091024_2.jpg
+- photos/jd-574-2.jpg / jd-574-2-thumb.jpg — 旧横浜船渠株式会社第二号船渠（ドック）：Thirteen-fri, “DOCKYARD GARDEN”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:DOCKYARD_GARDEN.jpg
+- photos/jd-709-1.jpg / jd-709-1-thumb.jpg — 富岩運河水閘施設（閘門と閘門操作室）：Hisenv, “HUGANNUNNGA NAKAZIMAKOUMON KOYA P1190093”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:HUGANNUNNGA_NAKAZIMAKOUMON_KOYA_P1190093.JPG
+- photos/jd-709-2.jpg / jd-709-2-thumb.jpg — 富岩運河水閘施設（閘門）：ネプチューン, “Nakajimakomon”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:Nakajimakomon.jpg
+- photos/jd-1002-1.jpg / jd-1002-1-thumb.jpg — 読書発電所施設（桃介橋）：松岡明芳, “Momosuke-bridge桃介橋長野県南木曽町-1922(大正11)年P8149366”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Momosuke-bridge%E6%A1%83%E4%BB%8B%E6%A9%8B%E9%95%B7%E9%87%8E%E7%9C%8C%E5%8D%97%E6%9C%A8%E6%9B%BD%E7%94%BA-1922(%E5%A4%A7%E6%AD%A311)%E5%B9%B4P8149366.JPG
+- photos/jd-1002-2.jpg / jd-1002-2-thumb.jpg — 読書発電所施設（柿其水路橋）：Qurren, “Yomikaki power station Kakizore aqueduct”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Yomikaki_power_station_Kakizore_aqueduct.jpg
+- photos/jd-1002-3.jpg / jd-1002-3-thumb.jpg — 読書発電所施設（発電所）：珈琲牛乳, “読書発電所 - panoramio”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E8%AA%AD%E6%9B%B8%E7%99%BA%E9%9B%BB%E6%89%80_-_panoramio.jpg
+- photos/jd-2073-1.jpg / jd-2073-1-thumb.jpg — 日本橋：arashio1, “026 日本橋3 - panoramio”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:026_%E6%97%A5%E6%9C%AC%E6%A9%8B3_-_panoramio.jpg
+- photos/jd-2073-2.jpg / jd-2073-2-thumb.jpg — 日本橋（青銅製の装飾）：福原邦展, “日本橋 - panoramio (9)”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E6%97%A5%E6%9C%AC%E6%A9%8B_-_panoramio_(9).jpg
+- photos/jd-2073-3.jpg / jd-2073-3-thumb.jpg — 日本橋（完成当時（1911年））：作者不明, “NewlyBuilt Nihonbashi 1911 Tokyo”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:NewlyBuilt_Nihonbashi_1911_Tokyo.jpg
+- photos/jd-2430-1.jpg / jd-2430-1-thumb.jpg — 神子畑鋳鉄橋：Nnn at Japanese Wikipedia, “Mikohata6596”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Mikohata6596.JPG
+- photos/jd-2430-2.jpg / jd-2430-2-thumb.jpg — 神子畑鋳鉄橋：shiro524, “Mikohata Bridge 20150530121923”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Mikohata_Bridge_20150530121923.jpg
+- photos/jd-3578-1.jpg / jd-3578-1-thumb.jpg — 通潤橋：masamic, “Tsujyunkyo”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Tsujyunkyo.jpg
+- photos/jd-3578-2.jpg / jd-3578-2-thumb.jpg — 通潤橋（放水）：Totti, “Tsujunkyo 2020 2”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Tsujunkyo_2020_2.jpg
+- photos/jd-3596-1.jpg / jd-3596-1-thumb.jpg — 白水溜池堰堤水利施設（主堰堤）：kentamabuchi, “Hakusui Dam, Oita Prefecture; October 2008 (02)”, CC BY-SA 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Hakusui_Dam,_Oita_Prefecture;_October_2008_(02).jpg
+- photos/jd-3596-2.jpg / jd-3596-2-thumb.jpg — 白水溜池堰堤水利施設（主堰堤）：kentamabuchi, “Hakusui Dam, Oita Prefecture; October 2008 (05)”, CC BY-SA 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Hakusui_Dam,_Oita_Prefecture;_October_2008_(05).jpg
+- photos/jd-3676-1.jpg / jd-3676-1-thumb.jpg — 横利根閘門：katorisi, “Yokotone-lock-gate,katori-city,chiba,japan”, CC BY 2.5
+  出典：https://commons.wikimedia.org/wiki/File:Yokotone-lock-gate,katori-city,chiba,japan.JPG
+- photos/jd-3676-2.jpg / jd-3676-2-thumb.jpg — 横利根閘門（閘室）：アリオト, “Yokotone Lock shock-absorbing material”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Yokotone_Lock_shock-absorbing_material.jpg
+- photos/jd-3679-1.jpg / jd-3679-1-thumb.jpg — 船頭平閘門：Tawashi, “船頭平閘門01”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E8%88%B9%E9%A0%AD%E5%B9%B3%E9%96%98%E9%96%8001.jpg
+- photos/jd-3693-1.jpg / jd-3693-1-thumb.jpg — 旧横浜船渠株式会社第一号船渠（ドック）（日本丸が入った第一号船渠）：Volfgang, “Yokohama Nipponmaru 3”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Yokohama_Nipponmaru_3.jpg
+- photos/jd-3693-2.jpg / jd-3693-2-thumb.jpg — 旧横浜船渠株式会社第一号船渠（ドック）（日本丸が入った第一号船渠）：Kanchi1979, “JP-Yokohama-Minato-Mirai-Nippon-Maru-Memorial-Park”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:JP-Yokohama-Minato-Mirai-Nippon-Maru-Memorial-Park.jpg
+- photos/jd-3704-1.jpg / jd-3704-1-thumb.jpg — 天城山隧道：Takisaw, “Amagi Tunnel 20171125”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Amagi_Tunnel_20171125.jpg
+- photos/jd-3704-2.jpg / jd-3704-2-thumb.jpg — 天城山隧道（坑門）：hoge asdf, “Amagi Tunnel (2463778389)”, CC BY 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Amagi_Tunnel_(2463778389).jpg
+- photos/jd-3808-1.jpg / jd-3808-1-thumb.jpg — 旧筑後川橋梁（筑後川昇開橋）：Rsa, “Chikugo River Lift Bridge DOWN 20110914”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Chikugo_River_Lift_Bridge_DOWN_20110914.jpg
+- photos/jd-3808-2.jpg / jd-3808-2-thumb.jpg — 旧筑後川橋梁（筑後川昇開橋）（吊上塔）：Rsa, “Chikugo River Lift Bridge 003”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Chikugo_River_Lift_Bridge_003.JPG
+- photos/jd-3959-1.jpg / jd-3959-1-thumb.jpg — 八ツ沢発電所施設（第一号水路橋）：Qurren, “Yatsusawa power station number 1 aqueduct”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Yatsusawa_power_station_number_1_aqueduct.jpg
+- photos/jd-4060-1.jpg / jd-4060-1-thumb.jpg — 旧八百津発電所施設（発電所本館）：Qurren, “Yaotsu Old Power Plant Museum”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Yaotsu_Old_Power_Plant_Museum.jpg
+- photos/jd-4060-2.jpg / jd-4060-2-thumb.jpg — 旧八百津発電所施設（放水口発電所）：Qurren, “Yaotsu secondary power station”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Yaotsu_secondary_power_station.jpg
+- photos/jd-4060-3.jpg / jd-4060-3-thumb.jpg — 旧八百津発電所施設（発電所本館の発電装置）：継之助, “Turbine of Yaotsu Old Power Plant”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Turbine_of_Yaotsu_Old_Power_Plant.jpg
+- photos/jd-4075-1.jpg / jd-4075-1-thumb.jpg — 豊稔池堰堤：Toto-tarou, “Hounenike Dam-01”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Hounenike_Dam-01.jpg
+- photos/jd-4075-2.jpg / jd-4075-2-thumb.jpg — 豊稔池堰堤：Toto-tarou, “Hounenike Dam-17”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Hounenike_Dam-17.jpg
+- photos/jd-4100-1.jpg / jd-4100-1-thumb.jpg — 布引水源地水道施設（五本松堰堤）：663highland, “Nunobiki dam06bs3200”, CC BY 2.5
+  出典：https://commons.wikimedia.org/wiki/File:Nunobiki_dam06bs3200.jpg
+- photos/jd-4100-2.jpg / jd-4100-2-thumb.jpg — 布引水源地水道施設（五本松堰堤）：663highland, “Nunobiki dam01s3200”, CC BY 2.5
+  出典：https://commons.wikimedia.org/wiki/File:Nunobiki_dam01s3200.jpg
+- photos/jd-4106-1.jpg / jd-4106-1-thumb.jpg — 旧品川燈台（博物館明治村に移築）：Tomio344456, “Shinagawa Lighthouse in Meiji Mura 2022”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Shinagawa_Lighthouse_in_Meiji_Mura_2022.jpg
+- photos/jd-4106-2.jpg / jd-4106-2-thumb.jpg — 旧品川燈台（博物館明治村に移築）：Yoshio Kohara, “明治村 品川燈台 (1870) 重要文化財 - panoramio”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E6%98%8E%E6%B2%BB%E6%9D%91_%E5%93%81%E5%B7%9D%E7%87%88%E5%8F%B0_(1870)_%E9%87%8D%E8%A6%81%E6%96%87%E5%8C%96%E8%B2%A1_-_panoramio.jpg
+- photos/jd-4110-1.jpg / jd-4110-1-thumb.jpg — 末広橋梁（旧四日市港駅鉄道橋）（可動桁を上げた状態）：たぬちゃん, “Suehiro bridge (open)”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Suehiro_bridge_(open).JPG
+- photos/jd-4110-2.jpg / jd-4110-2-thumb.jpg — 末広橋梁（旧四日市港駅鉄道橋）：z tanuki, “Suehiro bridge , 末広橋梁 - panoramio (4)”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Suehiro_bridge_,_%E6%9C%AB%E5%BA%83%E6%A9%8B%E6%A2%81_-_panoramio_(4).jpg
+- photos/jd-4119-1.jpg / jd-4119-1-thumb.jpg — 四日市旧港港湾施設（潮吹き防波堤）：おてらやさん, “20090523四日市港潮吹き堤防”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:20090523%E5%9B%9B%E6%97%A5%E5%B8%82%E6%B8%AF%E6%BD%AE%E5%90%B9%E3%81%8D%E5%A0%A4%E9%98%B2.JPG
+- photos/jd-4119-2.jpg / jd-4119-2-thumb.jpg — 四日市旧港港湾施設（潮吹き防波堤）：おてらやさん, “20090523四日市港潮吹き堤防2”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:20090523%E5%9B%9B%E6%97%A5%E5%B8%82%E6%B8%AF%E6%BD%AE%E5%90%B9%E3%81%8D%E5%A0%A4%E9%98%B22.JPG
+- photos/jd-4129-1.jpg / jd-4129-1-thumb.jpg — 本庄水源地堰堤水道施設（堰堤）：Atzy, “Honjo dam”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Honjo_dam.jpg
+- photos/jd-4183-1.jpg / jd-4183-1-thumb.jpg — 勝鬨橋：kanesue, “勝鬨橋 - panoramio (10)”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E5%8B%9D%E9%AC%A8%E6%A9%8B_-_panoramio_(10).jpg
+- photos/jd-4183-2.jpg / jd-4183-2-thumb.jpg — 勝鬨橋（跳開部の機械装置）：jmho, “Kachidoki bashi powerunit”, CC0
+  出典：https://commons.wikimedia.org/wiki/File:Kachidoki_bashi_powerunit.jpg
+- photos/jd-4230-1.jpg / jd-4230-1-thumb.jpg — 旧三河島汚水処分場喞筒場施設（阻水扉室（奥））：Suikotei, “Kyu Mikawajima Osui Shobunjo Pump-jo Shisetsu”, CC BY 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Kyu_Mikawajima_Osui_Shobunjo_Pump-jo_Shisetsu.jpg
+- photos/jd-4294-1.jpg / jd-4294-1-thumb.jpg — 旧揖斐川橋梁（1900年ごろ）：野口保興, “Ibigawa bridge, Gifu around 1900”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:Ibigawa_bridge,_Gifu_around_1900.png
+- photos/jd-4308-1.jpg / jd-4308-1-thumb.jpg — 石岡第一発電所施設（本館）：のりまき, “Ishioka I power station”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Ishioka_I_power_station.jpg
+- photos/jd-4327-1.jpg / jd-4327-1-thumb.jpg — 常願寺川砂防施設（白岩堰堤）：Hiroshi Nakai, “Shiraiwa Sabo Dam 白岩堰堤 Oct 15, 2015 (2)”, CC BY 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Shiraiwa_Sabo_Dam_%E7%99%BD%E5%B2%A9%E5%A0%B0%E5%A0%A4_Oct_15,_2015_(2).jpg
+- photos/jd-4327-2.jpg / jd-4327-2-thumb.jpg — 常願寺川砂防施設（白岩堰堤）：Hiroshi Nakai, “Shiraiwa Sabo Dam 白岩堰堤 Oct 15, 2015 (1)”, CC BY 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Shiraiwa_Sabo_Dam_%E7%99%BD%E5%B2%A9%E5%A0%B0%E5%A0%A4_Oct_15,_2015_(1).jpg
+- photos/jd-4341-1.jpg / jd-4341-1-thumb.jpg — 旧魚梁瀬森林鉄道施設（オオムカエ隧道）：Navian, “Oomukae tunnel”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:Oomukae_tunnel.JPG
+- photos/jd-4341-2.jpg / jd-4341-2-thumb.jpg — 旧魚梁瀬森林鉄道施設（平瀬隧道）：Navian, “Hirase tunnel”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:Hirase_tunnel.JPG
+- photos/jd-4573-1.jpg / jd-4573-1-thumb.jpg — 牛伏川本流水路（牛伏川階段工）：Qurren, “Ushibuse River French style stair-stepped channel works”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Ushibuse_River_French_style_stair-stepped_channel_works.jpg
+- photos/jd-4573-2.jpg / jd-4573-2-thumb.jpg — 牛伏川本流水路（牛伏川階段工）：Douglas Perkins, “French-Style Waterfall 02”, CC BY 4.0
+  出典：https://commons.wikimedia.org/wiki/File:French-Style_Waterfall_02.jpg
+- photos/jd-4703-1.jpg / jd-4703-1-thumb.jpg — 古河橋：手練, “Furukawa-bridge”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Furukawa-bridge.JPG
+- photos/jd-4703-2.jpg / jd-4703-2-thumb.jpg — 古河橋：Asturio Cantabrio, “Furukawa Bridge ac (1)”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Furukawa_Bridge_ac_(1).jpg
+- photos/jd-4703-3.jpg / jd-4703-3-thumb.jpg — 古河橋（ハーコート社の銘板）：手練, “Harkort maker`s plate”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Harkort_maker%60s_plate.JPG
+- photos/jd-4786-1.jpg / jd-4786-1-thumb.jpg — 長浜大橋：Si-take. at Japanese Wikipedia(しいたけ), “Movable bridge in Nagahama Ehime,JAPAN”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Movable_bridge_in_Nagahama_Ehime,JAPAN.jpg
+- photos/jd-4786-2.jpg / jd-4786-2-thumb.jpg — 長浜大橋：Amake, “Nagahama Drawbridge in Ōzu”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Nagahama_Drawbridge_in_%C5%8Czu.jpg
+- photos/jd-5142-1.jpg / jd-5142-1-thumb.jpg — 旧碓氷峠鉄道施設（第三橋梁）：nimame, “Usui Bridge No. 3 2014-05-01 01”, CC BY 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Usui_Bridge_No._3_2014-05-01_01.jpg
+- photos/jd-5142-2.jpg / jd-5142-2-thumb.jpg — 旧碓氷峠鉄道施設（第三橋梁）：Toshinori baba, “Usui Bridge No03.”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Usui_Bridge_No03..JPG
+- photos/jd-5232-1.jpg / jd-5232-1-thumb.jpg — 犬吠埼灯台（灯台）：くろふね, “犬吠埼灯台 - panoramio (1)”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E7%8A%AC%E5%90%A0%E5%9F%BC%E7%81%AF%E5%8F%B0_-_panoramio_(1).jpg
+- photos/jd-5232-2.jpg / jd-5232-2-thumb.jpg — 犬吠埼灯台：nagano, “犬吠埼”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:%E7%8A%AC%E5%90%A0%E5%9F%BC.JPG
+- photos/jd-5278-1.jpg / jd-5278-1-thumb.jpg — 坂戸橋：Opqr, “Sakado bridge”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Sakado_bridge.jpg
+- photos/jd-5278-2.jpg / jd-5278-2-thumb.jpg — 坂戸橋：濃間, “坂戸橋 上流側より”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:%E5%9D%82%E6%88%B8%E6%A9%8B_%E4%B8%8A%E6%B5%81%E5%81%B4%E3%82%88%E3%82%8A.jpg
+- photos/jd-5288-1.jpg / jd-5288-1-thumb.jpg — 紅葉谷川庭園砂防施設（紅葉谷川）：そらみみ (Soramimi), “Momijidani on Itsukushima Island 13”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Momijidani_on_Itsukushima_Island_13.jpg
+- photos/jd-5288-2.jpg / jd-5288-2-thumb.jpg — 紅葉谷川庭園砂防施設（紅葉谷川）：そらみみ, “Momijidani on Itsukushima Island 8”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Momijidani_on_Itsukushima_Island_8.jpg
+- photos/jd-5289-1.jpg / jd-5289-1-thumb.jpg — 六連島灯台：Morumoru, “Mutsure Shima Light”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Mutsure_Shima_Light.jpg
+- photos/jd-5310-1.jpg / jd-5310-1-thumb.jpg — 部埼灯台（灯台）：sk01, “部埼灯台 - panoramio”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E9%83%A8%E5%9F%BC%E7%81%AF%E5%8F%B0_-_panoramio.jpg
+- photos/jd-5310-2.jpg / jd-5310-2-thumb.jpg — 部埼灯台（灯台）：Morumoru, “Hesaki Light”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Hesaki_Light.jpg
+- photos/jd-5318-1.jpg / jd-5318-1-thumb.jpg — 西海橋（手前が西海橋、奥は新西海橋）：そらみみ, “Shin-Saikaibashi Bridge and Saikaibashi Bridge from observation deck east of Saikaibashi Park in Saikai, Nagasaki 3”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Shin-Saikaibashi_Bridge_and_Saikaibashi_Bridge_from_observation_deck_east_of_Saikaibashi_Park_in_Saikai,_Nagasaki_3.JPG
+- photos/jd-5318-2.jpg / jd-5318-2-thumb.jpg — 西海橋（手前が西海橋、奥は新西海橋）：そらみみ, “Shin-Saikaibashi Bridge and Saikaibashi Bridge from observation deck east of Saikaibashi Park in Saikai, Nagasaki”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Shin-Saikaibashi_Bridge_and_Saikaibashi_Bridge_from_observation_deck_east_of_Saikaibashi_Park_in_Saikai,_Nagasaki.JPG
+- photos/jd-5357-1.jpg / jd-5357-1-thumb.jpg — 御前埼灯台（灯台）：Qurren, “Omaezaki Lighthouse 3”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Omaezaki_Lighthouse_3.jpg
+- photos/jd-5357-2.jpg / jd-5357-2-thumb.jpg — 御前埼灯台（灯台）：Qurren, “Omaezaki Lighthouse 1”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Omaezaki_Lighthouse_1.jpg
+- photos/jd-5361-1.jpg / jd-5361-1-thumb.jpg — 第一大戸川橋梁：Motokoka, “Daiichi Daido-gawa bridge 02”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Daiichi_Daido-gawa_bridge_02.jpg
+- photos/jd-5361-2.jpg / jd-5361-2-thumb.jpg — 第一大戸川橋梁：Motokoka, “Daiichi Daido-gawa bridge 05”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Daiichi_Daido-gawa_bridge_05.jpg
+- photos/jd-5385-1.jpg / jd-5385-1-thumb.jpg — 美保関灯台（灯台）：Flow in edgewise, “Mihonoseki Lighthouse”, CC BY 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Mihonoseki_Lighthouse.jpg
+- photos/jd-5385-2.jpg / jd-5385-2-thumb.jpg — 美保関灯台（灯台と旧吏員退息所）：Aimaimyi, “Mihonoseki todai -01”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Mihonoseki_todai_-01.jpg
+- photos/jd-5388-1.jpg / jd-5388-1-thumb.jpg — 出雲日御碕灯台：663highland, “Hinomisaki lighthouse Izumo01bs3200”, CC BY 2.5
+  出典：https://commons.wikimedia.org/wiki/File:Hinomisaki_lighthouse_Izumo01bs3200.jpg
+- photos/jd-5388-2.jpg / jd-5388-2-thumb.jpg — 出雲日御碕灯台：Bernard Gagnon, “Hinomisaki Lighthouse01”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Hinomisaki_Lighthouse01.jpg
+- photos/jd-5390-1.jpg / jd-5390-1-thumb.jpg — 若戸大橋：そらみみ, “Wakato Bridge and central area of Wakamatsu, Kitakyushu”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Wakato_Bridge_and_central_area_of_Wakamatsu,_Kitakyushu.jpg
+- photos/jd-5390-2.jpg / jd-5390-2-thumb.jpg — 若戸大橋：そらみみ (Soramimi), “Wakato Bridge 20150509-1”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Wakato_Bridge_20150509-1.JPG
+- photos/jd-5415-1.jpg / jd-5415-1-thumb.jpg — 菅島灯台：Alpsdake, “Sugashima Lighthouse”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Sugashima_Lighthouse.JPG
+- photos/jd-5415-2.jpg / jd-5415-2-thumb.jpg — 菅島灯台：Alpsdake, “菅島灯台 ～黒崎 Sugashima Lighthouse and Kozukumi Island”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:%E8%8F%85%E5%B3%B6%E7%81%AF%E5%8F%B0_%EF%BD%9E%E9%BB%92%E5%B4%8E_Sugashima_Lighthouse_and_Kozukumi_Island.JPG
+- photos/jd-5446-1.jpg / jd-5446-1-thumb.jpg — 耶馬渓橋：sk01, “耶馬渓橋2 - panoramio”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:%E8%80%B6%E9%A6%AC%E6%B8%93%E6%A9%8B2_-_panoramio.jpg
+- photos/jd-5446-2.jpg / jd-5446-2-thumb.jpg — 耶馬渓橋：そらみみ, “Yabakeibashi Bridge on Yamakunigawa River”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Yabakeibashi_Bridge_on_Yamakunigawa_River.jpg
+- photos/jd-5469-1.jpg / jd-5469-1-thumb.jpg — 経ケ岬灯台（灯台）：NKNS, “Kyougamisaki 04”, CC BY-SA 3.0
+  出典：https://commons.wikimedia.org/wiki/File:Kyougamisaki_04.jpg
+- photos/jd-5469-2.jpg / jd-5469-2-thumb.jpg — 経ケ岬灯台（灯台）：松岡明芳, “Kyougamisaki Lighthouse（経ヶ岬灯台） 2010-10-03 457”, CC BY-SA 4.0
+  出典：https://commons.wikimedia.org/wiki/File:Kyougamisaki_Lighthouse%EF%BC%88%E7%B5%8C%E3%83%B6%E5%B2%AC%E7%81%AF%E5%8F%B0%EF%BC%89_2010-10-03_457.JPG
+- photos/jd-5485-1.jpg / jd-5485-1-thumb.jpg — 鍋島灯台：hiroaki from Tokyo, Japan, “Nabeshima Lighthouse (22122413273)”, CC BY 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Nabeshima_Lighthouse_(22122413273).jpg
+- photos/jd-5485-2.jpg / jd-5485-2-thumb.jpg — 鍋島灯台：hiroaki from Tokyo, Japan, “Nabeshima Lighthouse (22729977712)”, CC BY 2.0
+  出典：https://commons.wikimedia.org/wiki/File:Nabeshima_Lighthouse_(22729977712).jpg
+- photos/jd-5544-1.jpg / jd-5544-1-thumb.jpg — 釣島灯台（灯台）：木多正, “釣島灯台”, パブリックドメイン
+  出典：https://commons.wikimedia.org/wiki/File:%E9%87%A3%E5%B3%B6%E7%81%AF%E5%8F%B0.jpg
+- photos/jd-5567-1.jpg / jd-5567-1-thumb.jpg — 旧岩淵水門：Jmho, “Iwabuchi suimon red”, CC0
+  出典：https://commons.wikimedia.org/wiki/File:Iwabuchi_suimon_red.jpg
+- photos/jd-5567-2.jpg / jd-5567-2-thumb.jpg — 旧岩淵水門：Misei sen, “旧岩淵水門”, CC0
+  出典：https://commons.wikimedia.org/wiki/File:%E6%97%A7%E5%B2%A9%E6%B7%B5%E6%B0%B4%E9%96%80.jpg
 
 ## 地図・ライブラリ
 - Leaflet 1.9.4：https://leafletjs.com/ — BSD 2-Clause（同梱 LICENSE-Leaflet.txt）

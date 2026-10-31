@@ -30,7 +30,7 @@
   原稿との差分を review/narratives-diff.txt に出す。原稿の内容に置き換えるときは --overwrite を使う。
 
 エラー（1件でもあると何も書き出さない）:
-  data.json に無い遺産ID／キーと id の違い／名称が data.json と違う／同じIDの内容違い／必須項目の不足・型の違い／
+  data.json・designated.json に無い遺産ID／キーと id の違い／名称が元データと違う／同じIDの内容違い／必須項目の不足・型の違い／
   出典番号の重複・存在しない出典番号への参照／http(s) 以外の出典URL／1つのファイルの中での同じキーの重複
 注意（書き出しは行う）:
   どこからも参照されていない出典／公開しない項目
@@ -50,6 +50,7 @@ OUT_DIR = os.path.join(ROOT, "narratives")
 REVIEW_DIR = os.path.join(ROOT, "review")
 STATE_PATH = os.path.join(SRC_DIR, "build-state.json")
 DATA_PATH = os.path.join(ROOT, "data.json")
+DESIGNATED_PATH = os.path.join(ROOT, "designated.json")   # 国の重要文化財（土木系・選奨外）。ID は jd-…
 
 # 公開する項目（これ以外は書き出さない）
 ITEM_FIELDS = {
@@ -120,11 +121,11 @@ def check_record(where, rid, rec, ids, names, errors, warnings, private_notes):
         errors.append(f"{where}: 中身がオブジェクトではありません")
         return None
     if rid not in ids:
-        errors.append(f"{where}: 遺産ID「{rid}」は data.json にありません")
+        errors.append(f"{where}: 遺産ID「{rid}」は data.json・designated.json にありません")
     if rec.get("id") != rid:
         errors.append(f"{where}: キーの遺産ID「{rid}」と id「{rec.get('id')}」が違います")
     if rid in names and rec.get("name") != names[rid]:
-        errors.append(f"{where}: 名称「{rec.get('name')}」が data.json の名称「{names[rid]}」と違います（推測で結び付けずに止めます）")
+        errors.append(f"{where}: 名称「{rec.get('name')}」が元データの名称「{names[rid]}」と違います（推測で結び付けずに止めます）")
 
     pub = rec.get("public")
     if not isinstance(pub, dict):
@@ -276,6 +277,9 @@ def main():
 
     with open(DATA_PATH, encoding="utf-8") as f:
         data = json.load(f)
+    if os.path.exists(DESIGNATED_PATH):
+        with open(DESIGNATED_PATH, encoding="utf-8") as f:
+            data = data + json.load(f)
     ids = {r["id"] for r in data}
     names = {r["id"]: r["name"] for r in data}
 

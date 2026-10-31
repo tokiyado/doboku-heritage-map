@@ -62,12 +62,13 @@ python tools/build_designated.py
 - 土木学会の公開マップ（KML）の「国宝・重要文化財（建造物）マップ」の層を読み、1棟ずつの記録を指定の単位（例「旧碓氷峠鉄道施設」）にまとめ、土木系の単位だけを残します。
 - 選奨土木遺産と同じ施設の単位は除きます（300m以内に選奨土木遺産の地点がある単位、または手で確かめて同じと判断した単位）。判断の例外は `tools/build_designated.py` の `SAME_AS`・`NOT_SAME`・`NOT_CIVIL` に書きます。
 - 照合の結果は `review/designated-report.md`（公開しない）に出ます。
+- 55件すべてに紹介文（`narratives/jd-*.json`）と、一部に Wikimedia Commons の写真（`photos/jd-*.jpg`）があります。紹介文は文化遺産オンライン（文化庁）の解説などをもとに書き、出典を各紹介文に付けています。
 
 ## 紹介文を更新・追加する
 
 紹介文は `data.json` とは別のデータです。元原稿（調査メモつき）は `narratives-src/` に置き、公開用の部分だけを `narratives/` に書き出します。`narratives-src/` と、照合レポートを置く `review/` は Git の追跡対象外なので、GitHub にも公開サイトにも出ません。
 
-いまの元原稿は `narratives-src/heritage-narratives-cumulative570.json`（全570遺産）です。取り込み済みの古いバッチ（試作10件）は `narratives-src/archive/` に移してあり、読み込みません。
+いまの元原稿は `narratives-src/heritage-narratives-cumulative570-edited.json`（全570遺産）と `narratives-src/designated-narratives.json`（国の重要文化財55件。ID は `jd-…`、名称は `designated.json` と照合）です。取り込み済みの古いバッチ（試作10件）は `narratives-src/archive/` に移してあり、読み込みません。
 
 1. 新しい原稿ファイルを `narratives-src/` の直下に置きます。累計版で差し替えるときは、古い累計版を `narratives-src/archive/` に移します（直下に同じ遺産IDの別の内容が2つあると、エラーにして止めます）。形式は `{"records": {"遺産ID": {...}}}` か、1件ずつの `{"id": "遺産ID", "public": {...}}` です。
 2. 確認だけをするときは、次を実行します。`narratives/` は書き換えず、照合レポートだけを作ります。
